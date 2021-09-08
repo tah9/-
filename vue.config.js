@@ -2,22 +2,30 @@ module.exports = {
     devServer: {
         open: false,
         host: '0.0.0.0', //服务器域名ip ,设置为0.0.0.0则所有的地址均能访问
-        port: 8081,
+        port: 8080,
         https: true,
         disableHostCheck: true,
         //以上的ip和端口是我们本机的;下面为需要跨域的
-        proxy: {//配置跨域
+        proxy: {
             '/api': {
-                target: 'http://localhost:8080',//这里后台的地址模拟的;应该填写你们真实的后台接口
-                ws: true,
+                target: 'http://localhost:9001',//这里后台的地址模拟的;应该填写你们真实的后台接口
+                ws: true,//允许跨域
                 changOrigin: true,//允许跨域
                 pathRewrite: {
                     '^/api': ''//请求的时候使用这个api就可以
                 }
             }
-
         }
+    },
+    configureWebpack:{
+        // externals: {
+        //     'BMap': 'BMap'
+        // }
     }
+
+    // externals:{
+    //     'BMap':'Bmap'
+    // }
     // /* webpack-dev-server 相关配置 */
     // devServer: {
     //     open: false, //自动打开浏览器

@@ -1,6 +1,6 @@
 <template>
   <div class="root">
-    <navbar :title='title'></navbar>
+    <navbar title='手机号注册'></navbar>
     <div style="padding-left: 3%;padding-right: 3%">
 
       <!-- 输入昵称 -->
@@ -12,14 +12,6 @@
       <!-- 输入密码 -->
       <van-field v-model="user.password" type="password" label="密码" placeholder="请输入密码"
                  maxlength="11" :required="true" :rules="[{ required: true }]"/>
-      <van-field name="radio" label="性别">
-        <template #input>
-          <van-radio-group v-model="user.gender" direction="horizontal">
-            <van-radio name="男">男</van-radio>
-            <van-radio name="女">女</van-radio>
-          </van-radio-group>
-        </template>
-      </van-field>
       <div style="margin: 16px;" @click="registerUp">
         <van-button round block type="info" native-type="submit">注册</van-button>
       </div>
@@ -40,34 +32,32 @@
 <script>
 import Navbar from "@/components/navbar";
 import request from "@/network/request";
-
+import {Toast} from "vant";
 export default {
   name: "Register",
   components: {Navbar},
   data() {
     return {
-      title: '手机号注册',
       registerFinish: false,
       user: {
         phone_number: '',
         password: '',
         username: '',
-        gender: '男'
       },
     }
   },
   methods: {
     addFace(){
-        this.$router.push('/login/addface/'+this.user.phone_number)
+      this.$router.push('/login/addface/'+this.user.phone_number)
     },
     registerUp() {
       request.post('/user/register', this.user).then(res => {
-        console.log(res);
-        this.$root.token=res.token
-        console.log(this.$root.token);
-        this.registerFinish = true
-      }).catch(e => {
-        alert(e)
+        if (res.code===200){
+          this.$root.token=res.token
+          this.registerFinish = true
+        }else{
+          Toast.fail(res.msg)
+        }
       })
     }
   }

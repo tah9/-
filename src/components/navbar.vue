@@ -2,7 +2,7 @@
   <div class="navbar">
     <div class="left" @click="$router.go(-1)">
       <van-icon name="arrow-left" color="#1989FA"/>
-      <span>返回</span>
+      <!--<span>返回</span>-->
     </div>
     <div class="center">{{ title }}</div>
   </div>

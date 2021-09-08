@@ -1,30 +1,3 @@
-// import axios from 'axios'
-//
-// export default function request(config) {
-//     let head = {
-//         baseURL: '/api',
-//         timeout: 5000,
-//         // headers: {
-//         //     Authorization: index.state.token
-//         // }
-//     }
-//     const instance = axios.create(head)
-//     instance.interceptors.request.use(config => {
-//         console.log(config.url);
-//         console.log(config.baseURL)
-//         return config
-//     }, err => {
-//
-//     })
-//     instance.interceptors.response.use(res => {
-//         // console.log(res.data.code);
-//         return res.data
-//     }, err => {
-//
-//     })
-//     return instance(config)
-// }
-// 基于axios封装的网络请求模块
 import axios from 'axios'
 
 const request = axios.create({
@@ -32,10 +5,13 @@ const request = axios.create({
     timeout: 60000
 })
 
-// request 拦截器
-// 可以自请求发送前对请求做一些处理
 // 比如统一加token，对请求参数统一加密
 request.interceptors.request.use(config => {
+    // console.log(config);
+    //给百度接口添加token
+    if (config.url.indexOf("https://aip.baidubce.com/rest/2.0/face/v3") !== -1) {
+        config.url+='?access_token=24.b5a99405e4e864ee75267aa50315654e.2592000.1632800342.282335-24767568'
+    }
     // config.headers['token'] = user.token;  // 设置请求头
     //
     // if (localStorage.getItem('token')) {
@@ -66,7 +42,7 @@ request.interceptors.response.use(
     },
     error => {
         console.log('err' + error) // for debug
-        alert(error)
+        // alert(error)
         return error
     }
 )

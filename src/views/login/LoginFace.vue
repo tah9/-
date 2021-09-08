@@ -12,66 +12,67 @@
 <script>
 import request from "@/network/request";
 import Navbar from "@/components/navbar";
-import {openUserMedia} from "@/untils/CameraUntil";
+import {openUserMedia, getImg, syncStopTrack, restartTrack, destroyTrack} from "@/untils/CameraUntil";
 import {Toast} from "vant";
 
 export default {
   name: "face",
   components: {Navbar},
   data() {
-    return {
-      imgData: null,
-      unWatch: null
-    }
+    return {}
   },
+  methods: {
+    matchFace(imgBase) {
+      console.log('match')
 
-  mounted() {
-    this.unWatch = this.$watch('imgData', (nval, oval) => {
-      this.unWatch()
-      this.$refs.img.src = nval
-      let imgBase = nval.split(',')[1]
-      console.log(imgBase)
-      //匹配人脸
-      request.post('https://aip.baidubce.com/rest/2.0/face/v3/multi-search' + this.baiduToken,
-          {
-            image: imgBase,
-            image_type: "BASE64",
-            group_id_list: "1",
-          }).then(res => {
-          console.log(res);
-        if (res.error_code===0){
-          //1：N搜索，只取图中最大的人脸识别，face_list数组不会超过1
-          let faceUser = res.result.face_list[0].user_list[0];
-          let data={
-            phone_number: faceUser.user_id,
-            token:faceUser.user_info
-          }
-          console.log(data);
-          request.post('/user/loginface',data).then(res=>{
+      let data = {
+        image: imgBase,
+        image_type: "BASE64",
+        group_id_list: "1",
+      }
+      return request.post(this.baiduUrl + '/multi-search', data)
+          .then(res => {
+            console.log(res);
+            if (res.error_code === 0) {
+              let faceUser = res.result.face_list[0].user_list[0];
+              console.log(faceUser);
+              return Promise.resolve(faceUser)
+            } else if (res.error_code === 222207) {
+              Toast.fail('用户未认证!')
+              return Promise.reject()
+            }
+          })
+    },
+    faceLogin(faceUser) {
+      let data = {
+        phone_number: faceUser.user_id,
+        token: faceUser.user_info
+      }
+      console.log(data);
+      request.post('/user/loginface', data)
+          .then(res => {
             if (res.code === 200) {
-              Toast.success('登录成功')
-            }else{
+              this.$root.token = data.token
+              this.$root.user = res.user
+              Toast.success("欢迎，" + res.user.username)
+              destroyTrack()
+              this.$router.replace('/main/mine')
+            } else {
               Toast.fail(JSON.stringify(res));
             }
           })
-        }
-        else if (res.error_code===222207){
-          Toast.fail('用户未认证!')
-        }
-      })
-    })
-    openUserMedia(trackEvent => {
-      if (trackEvent.data.length > 0) {//人脸数大于0
-        let canvas = document.createElement("canvas");
-        canvas.width = this.$refs.video.videoWidth;
-        canvas.height = this.$refs.video.videoHeight;
-        canvas.getContext('2d').drawImage(this.$refs.video, 0, 0);
-        this.imgData = canvas.toDataURL("image/png")
-      } else {
+    }
+  },
+  mounted() {
+    openUserMedia(this.$refs.video, trackEvent => {
+      if (trackEvent.data.length > 0) {
+        syncStopTrack()
+        this.matchFace(getImg(this.$refs.video))
+            .then(this.faceLogin)
+            .catch(restartTrack)
       }
     })
-  },
-  methods: {},
+  }
 }
 </script>
 
@@ -118,7 +119,6 @@ h3 {
 img {
   grid-column-start: 2;
   grid-row-start: 4;
-  background: red;
   width: 300px;
   height: 300px;
 }

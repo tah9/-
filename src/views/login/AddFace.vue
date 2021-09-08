@@ -1,8 +1,9 @@
 <template>
   <div class="root">
-    <navbar :title="title" class="navbar"></navbar>
+    <navbar title="注册人脸" class="navbar"></navbar>
     <div class="face" ref="face">
-      <video autoplay playsinline id="video" ref="video"></video>
+      <video width="560" height="720" id="video" autoplay muted ref="video"></video>
+      <canvas width="560" height="720" id="canvas" ></canvas>
     </div>
     <h3>把脸移入框内</h3>
     <img ref="img">
@@ -13,61 +14,101 @@
 import request from "@/network/request";
 import Navbar from "@/components/navbar";
 import {Toast} from "vant";
-import {openUserMedia} from '@/untils/CameraUntil'
+import {openUserMedia, syncStopTrack, restartTrack, getImg, destroyTrack} from '@/untils/CameraUntil'
+import * as faceapi from "../../../public/face-api.min";
 
 export default {
   name: "AddFace",
   components: {Navbar},
   data() {
-    return {
-      title: '注册人脸',
-      imgData: null,
-      unWatch: null
+    return {}
+  },
+  methods: {
+    determineIfExisted(imgBase) {
+      console.log('determineIfExisted')
+      let jsonData = {
+        image: imgBase,
+        image_type: "BASE64",
+        group_id_list: "1",
+      }
+      return request.post(this.baiduUrl + '/multi-search', jsonData)
+          .then(res => {
+            if (res.error_code === 0) {
+              Toast.fail('人脸已被认证')
+              return Promise.reject()
+            } else {
+              return Promise.resolve(jsonData.image)
+            }
+          })
+    },
+    addFace(image) {
+      let jsonData = {
+        image: image,
+        image_type: "BASE64",
+        group_id: "1",
+        user_id: this.$route.params.phone_number,
+        user_info: this.$root.token
+      }
+      request.post(this.baiduUrl + '/faceset/user/add', jsonData)
+          .then(res => {
+            console.log(res);
+            request.put('/user/addface/' + this.$route.params.phone_number)
+                .then(res => {
+                  console.log(res);
+                  Toast.success('添加成功');
+                  destroyTrack()
+                  this.$router.replace('/login')
+                })
+          })
     }
   },
-
   mounted() {
-    console.log(this.$root.token+'===');
-    this.unWatch = this.$watch('imgData', (nval, oval) => {
-      this.unWatch()
-      this.$refs.img.src = nval
-      let imgBase = nval.split(',')[1]
-      console.log(imgBase)
-      request.post('https://aip.baidubce.com/rest/2.0/face/v3/faceset/user/add' + this.baiduToken,
-          {
-            image: imgBase,
-            image_type: "BASE64",
-            group_id: "1",//每组上限80W张图，所以暂时都上传1组
-            user_id: this.$route.params.phone,
-            user_info:this.$root.token
-          }).then(res => {
-        if (res.error_msg === 'SUCCESS') {
-          Toast.success('认证成功');
-          request.put('/user/addface/'+this.$route.params.phone).then(res=>{
-            this.$router.replace('/login')
-          })
-        } else {
-          Toast.fail(JSON.stringify(res));
-        }
+    this.$nextTick(() => {
+      const video = document.getElementById('video')
+      const canvas = document.getElementById('canvas')
+      Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+        faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
+        // faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
+        faceapi.nets.faceExpressionNet.loadFromUri('/models')
+      ]).then(()=>{
+        console.log('over')
+        navigator.getUserMedia(
+            {video: {}},
+            stream => video.srcObject = stream,
+            err => console.error(err)
+        )
+        video.addEventListener('play',()=>{
+          const displaySize = { width: video.width, height: video.height }
+          faceapi.matchDimensions(canvas, displaySize)
+          let options = new faceapi.TinyFaceDetectorOptions();
+          setInterval(async () => {
+            const detections = await faceapi.detectAllFaces(video, options).withFaceLandmarks()
+            const resizedDetections = faceapi.resizeResults(detections, displaySize)
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height)
+            faceapi.draw.drawDetections(canvas, resizedDetections)
+            faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
+          }, 100)
+        })
+
       })
     })
-    openUserMedia(trackEvent => {
-      if (trackEvent.data.length > 0) {//人脸数大于0
-        let canvas = document.createElement("canvas");
-        canvas.width = this.$refs.video.videoWidth;
-        canvas.height = this.$refs.video.videoHeight;
-        canvas.getContext('2d').drawImage(this.$refs.video, 0, 0);
-        this.imgData = canvas.toDataURL("image/png")
-      } else {
-      }
-    })
+
+    // openUserMedia(this.$refs.video, trackEvent => {
+    //   if (trackEvent.data.length > 0) {
+    //     syncStopTrack()
+    //     this.determineIfExisted(getImg(this.$refs.video))
+    //         .then(this.addFace)
+    //         .catch(restartTrack)
+    //   }
+    // });
   },
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .navbar {
-  grid-column-start: span 3;
+  top: 0;
 }
 
 .root {
@@ -76,26 +117,18 @@ export default {
   left: 0;
   right: 0;
   position: fixed;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  grid-template-rows: auto 10% auto 1fr 1fr 1fr 1fr 1fr;
 }
 
 
 .face {
-  grid-column-start: 2;
-  grid-row-start: 3;
-  /*position: relative;*/
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  overflow: hidden;
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -40%); /* 50%为自身尺寸的一半 */
 }
 
 #video {
-  width: 300px;
-  height: 300px;
-  /*position: absolute;*/
+  position: absolute;
 }
 
 h3 {
@@ -103,11 +136,12 @@ h3 {
   grid-column-start: 2;
   text-align: center;
 }
-
+canvas{
+  position: absolute;
+}
 img {
   grid-column-start: 2;
   grid-row-start: 4;
-  background: red;
   width: 300px;
   height: 300px;
 }
