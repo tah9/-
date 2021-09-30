@@ -2,7 +2,7 @@
   <div class="list-view" id="listView">
     <div class="list-item" v-for="(item,index) in rows" @click="contentInfo(item.id)">
       <div class="item-top">
-        <img class="avt-img" :src="item.userAvatar" @click="toUserInfo(item.uid)">
+        <img class="avt-img" :src="item.userAvatar" @click="toUserInfo(item.username)">
         <span class="avt-title">{{ item.username }}</span>
         <span class="avt-tag">
           {{getTime(item.dateline)}}&nbsp;<img class="emoji-c" src="/api/graduate/emoji/systeam/手机.jpg"/>{{ item.device_title }}
@@ -49,9 +49,9 @@ export default {
     contentInfo(id) {
       this.$router.push('/articleInfo/' + id)
     },
-    toUserInfo(uid) {
+    toUserInfo(username) {
       event.stopPropagation()
-      this.$router.push('/user/' + uid);
+      this.$router.push('/u/' + username);
     },
     like(index) {
       event.stopPropagation()

@@ -6,7 +6,7 @@
 
       <transition name="fade">
         <div class="nav-hide" v-show="showSmall">
-          <img :src="info.userAvatar" class="nav-avt">
+          <img :src="info.userAvatar" class="nav-avt" @click="$router.push('/u/' + info.username)">
           <h4>{{ info.username }}</h4>
           <div v-show="info.uid!==$root.getUser().uid"
                :style="'background:' +btnColor()+';'">{{ checkFocus() }}
@@ -19,7 +19,7 @@
     <div class="content" id="content">
       <div class="main">
         <div class="item-top">
-          <img class="avt-img" :src="info.userAvatar">
+          <img class="avt-img" :src="info.userAvatar"  @click="$router.push('/u/' + info.username)>
           <span class="avt-title">{{ info.username }}</span>
           <span class="avt-tag">
             {{ getTime(info.dateline) }}
