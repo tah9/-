@@ -1,9 +1,9 @@
 <template>
   <div id="comment-view">
     <div class="item" v-for="data in viewRows">
-      <img :src="data.userAvatar" class="avt-img">
+      <img :src="data.userAvatar" class="avt-img"  @click="$router.push('/u/' + data.username)">
       <div class="comment-content" >
-        <span class="comment-name">{{ data.username }}</span>
+        <span class="comment-name"  @click="$router.push('/u/' + data.username)">{{ data.username }}</span>
         <div class="item-content" contenteditable="plaintext-only" v-html="formatContent(data.message)"></div>
         <img v-if="data.pic.length>0" :src="data.pic" class="item-pc">
         <div class="comment-bottom">

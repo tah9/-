@@ -3,6 +3,7 @@
     <div class="header" :style="'height:'+navNormalHeight+'px;'" id="header">
       <div id="headerRoot">
         <img :src="coverImg" class="coverImg">
+        <div id="imgMask"></div>
         <slot name="headerInfo"></slot>
         <div id="mask"></div>
       </div>
@@ -93,7 +94,7 @@ export default {
       }
       if (header.clientHeight<=_this.navNormalHeight){
         let temp = _this.navNormalHeight - header.clientHeight
-        let val = temp / _this.navNormalHeight
+        let val = (temp / _this.navNormalHeight)-0.2
         mask.style.background = 'rgba(0, 0, 0, '+val+')'
       }
       if (header.clientHeight<=_this.navExpandHeight){
@@ -178,6 +179,13 @@ export default {
   height: 100%;
   width: 100%;
   position: absolute;
+  pointer-events: none;
+}
+#imgMask{
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  background-color: rgba(0,0,0,0.45);
   pointer-events: none;
 }
 #headerRoot {

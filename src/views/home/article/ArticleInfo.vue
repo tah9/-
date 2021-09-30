@@ -19,7 +19,7 @@
     <div class="content" id="content">
       <div class="main">
         <div class="item-top">
-          <img class="avt-img" :src="info.userAvatar"  @click="$router.push('/u/' + info.username)>
+          <img class="avt-img" :src="info.userAvatar"  @click="$router.push('/u/' + info.username)">
           <span class="avt-title">{{ info.username }}</span>
           <span class="avt-tag">
             {{ getTime(info.dateline) }}
