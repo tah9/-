@@ -108,7 +108,7 @@ export default {
 }
 
 .tab-item {
-  overflow: scroll;
+  //overflow: scroll;
 }
 
 
