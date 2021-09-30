@@ -1,29 +1,32 @@
 <template>
-  <div class="list-view" id="listView">
-    <div class="list-item" v-for="(item,index) in rows" @click="contentInfo(item.id)">
-      <div class="item-top">
-        <img class="avt-img" :src="item.userAvatar" @click="toUserInfo(item.username)">
-        <span class="avt-title">{{ item.username }}</span>
-        <span class="avt-tag">
+    <van-list v-model="loading"
+              :finished="finished" offset="0"
+              finished-text="没有更多了"
+              @load="onLoad"  class="list-view" id="listView">
+      <div class="list-item" v-for="(item,index) in rows" @click="contentInfo(item.id)">
+        <div class="item-top">
+          <img class="avt-img" :src="item.userAvatar" @click="toUserInfo(item.username)">
+          <span class="avt-title">{{ item.username }}</span>
+          <span class="avt-tag">
           {{getTime(item.dateline)}}&nbsp;<img class="emoji-c" src="/api/graduate/emoji/systeam/手机.jpg"/>{{ item.device_title }}
         </span>
-        <van-icon name="arrow-down" class="arr-bottom" color="#666666"/>
-      </div>
-      <div class="item-content" contenteditable="plaintext-only" v-html="formatContent(item.message)"></div>
-      <div class="item-pics">
-        <img v-for="url in item.picArr" :src="url"/>
-      </div>
-      <div class="item-bottom">
+          <van-icon name="arrow-down" class="arr-bottom" color="#666666"/>
+        </div>
+        <div class="item-content" contenteditable="plaintext-only"  v-html="formatContent(item.message)"></div>
+        <div class="item-pics">
+          <img v-for="(url,index) in item.picArr" :src="url" @click="clickImg(item.picArr,index)"/>
+        </div>
+        <div class="item-bottom">
         <span class="bottom-span" @click="like(index)">
           <van-icon class="bottom-icon" name="good-job" v-show="item.like===true"/>
           <van-icon class="bottom-icon" name="good-job-o" v-show="item.like!==true"/>
           <span>&nbsp;{{ item.likenum }}</span>
         </span>
-        <span class="bottom-span"><van-icon class="bottom-icon" name="chat-o"/><span>&nbsp;{{ item.replynum }}</span></span>
-        <span class="bottom-span"><van-icon class="bottom-icon" name="share-o"/><span>&nbsp;{{ item.share_num }}</span></span>
+          <span class="bottom-span"><van-icon class="bottom-icon" name="chat-o"/><span>&nbsp;{{ item.replynum }}</span></span>
+          <span class="bottom-span"><van-icon class="bottom-icon" name="share-o"/><span>&nbsp;{{ item.share_num }}</span></span>
+        </div>
       </div>
-    </div>
-  </div>
+    </van-list>
 </template>
 
 <script>
@@ -31,18 +34,39 @@
 
 import request from "@/network/request";
 import {getTime} from "@/untils/Other";
-
+import { ImagePreview } from 'vant';
 export default {
   name: "Article",
-  props: {
-    rows: null,
-  },
   data(){
     return{
-      dataV:''
+      rows: null,
+      dataV:'',
+      loading: false,
+      finished: false,
+      pagerNum:1,
+      pagerSize:10
     }
   },
   methods: {
+    onLoad(){
+      console.log('beload')
+      request.get("/article/get?pagerNum="+(this.pagerNum++)+"&pagerSize="+(this.pagerSize++)).then(res => {
+        if (this.rows===null){
+          this.rows=res.rows
+        }
+        else{
+          this.rows.push(...res.rows)
+        }
+        this.loading=false
+      })
+    },
+    clickImg(picArr,index){
+      event.stopPropagation()
+      ImagePreview({
+        images: picArr,
+        startPosition: index
+      });
+    },
     getTime(oldTime){
       return getTime(oldTime)
     },
@@ -75,7 +99,7 @@ export default {
       }
     },
     formatContent(str) {
-        let head = '<img ' + this.dataV + ' src="/api/graduate/emoji/'
+      let head = '<img ' + this.dataV + ' src="/api/graduate/emoji/'
         let end = '.jpg" class="content-emoji">'
         str = str.replace(new RegExp('\\[', "gm"), head)
         str = str.replace(new RegExp(']', "gm"), end)
@@ -88,7 +112,7 @@ export default {
     _this.$nextTick(()=>{
       //获取data-v（scope权限）
       let listView = document.getElementById('listView');
-      console.log(listView);
+      // console.log(listView);
       _this.dataV = listView.attributes[0].name
     })
   }
@@ -152,8 +176,18 @@ export default {
 
 .item-content {
   margin-top: 10px;
-  pointer-events: none;
   letter-spacing: @text-space;
+
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+
+  -khtml-user-select: none;
+
+  -moz-user-select: none;
+
+  -ms-user-select: none;
+
+  user-select: none;
 }
 
 .content-emoji {

@@ -17,36 +17,39 @@
 <script>
 export default {
   name: "Temp",
-  props :{
+  props: {
     navNormalHeight: 0,
     navShrinkHeight: 0,
     navExpandHeight: 0,
-    coverImg:''
+    coverImg: ''
   },
   mounted() {
     let _this = this;
     let header = document.getElementById('header')
     let content = document.getElementById('content')
-    let mask=document.getElementById('mask')
+    let mask = document.getElementById('mask')
 
     document.documentElement.style.overflowY = 'hidden'
 
     let startY, lastContentY = 0
     let oldY
     let up, lastHeight = _this.navNormalHeight
-    window.addEventListener('touchstart', ev => {
+
+    function start(ev) {
       let touches = ev.touches[0];
       startY = touches.clientY
-    })
-    window.addEventListener('touchmove', ev => {
+    }
+
+
+    function move(ev) {
       let touches = ev.touches[0]
       //第一次移动仅获取坐标，不进行其他操作
-      if (oldY===undefined){
-        oldY=touches.clientY
+      if (oldY === undefined) {
+        oldY = touches.clientY
         return
       }
       up = touches.clientY <= oldY
-      console.log(up);
+      // console.log(up);
       //上滑
       if (up) {
         let offY = startY - touches.clientY
@@ -60,7 +63,7 @@ export default {
         }
         //顶部收缩完成
         else {
-          console.log(content.style.overflowY)
+          // console.log(content.style.overflowY)
           //打开主内容滑动（下方滑动）
           content.style.overflowY = 'scroll'
 
@@ -75,7 +78,7 @@ export default {
           if (content.style.overflowY === 'scroll') {
             content.style.overflowY = 'hidden'
             startY = touches.clientY;
-            lastHeight=_this.navShrinkHeight
+            lastHeight = _this.navShrinkHeight
           }
           let offY = touches.clientY - startY
           let newHeight = (lastHeight + offY)
@@ -92,60 +95,75 @@ export default {
           content.scrollTop = offO
         }
       }
-      if (header.clientHeight<=_this.navNormalHeight){
+      if (header.clientHeight <= _this.navNormalHeight) {
         let temp = _this.navNormalHeight - header.clientHeight
-        let val = (temp / _this.navNormalHeight)-0.2
-        mask.style.background = 'rgba(0, 0, 0, '+val+')'
+        let val = (temp / _this.navNormalHeight) - 0.2
+        mask.style.background = 'rgba(0, 0, 0, ' + val + ')'
       }
-      if (header.clientHeight<=_this.navExpandHeight){
-        _this.$emit('navHide',header.clientHeight)
+      if (header.clientHeight <= _this.navExpandHeight) {
+        _this.$emit('navHide', header.clientHeight)
       }
       //电脑端模拟手机滑动到屏幕外修正
       if (touches.clientY < document.documentElement.clientHeight
-          &&touches.clientX<0&&touches.clientX>document.documentElement.clientWidth) {
-        oldY= touches.clientY
+          && touches.clientX < 0 && touches.clientX > document.documentElement.clientWidth) {
+        oldY = touches.clientY
       }
       oldY = touches.clientY
-    })
-    window.addEventListener('touchend', ev => {
+    }
+
+
+    function end(ev) {
       lastHeight = header.clientHeight
       //高度大于普通高度，触发回弹动画
-      if (lastHeight>=_this.navNormalHeight){
-        let interval=setInterval(()=>{
-          if (header.clientHeight<=_this.navNormalHeight+5){
+      if (lastHeight >= _this.navNormalHeight) {
+        let interval = setInterval(() => {
+          if (header.clientHeight <= _this.navNormalHeight + 5) {
             clearInterval(interval)
           }
-          let height=header.clientHeight-5
-          header.style.height=height+'px'
-          if (header.clientHeight<=_this.navNormalHeight+5){
-            lastHeight=_this.navNormalHeight
+          let height = header.clientHeight - 5
+          header.style.height = height + 'px'
+          if (header.clientHeight <= _this.navNormalHeight + 5) {
+            lastHeight = _this.navNormalHeight
           }
-        },5)
+        }, 5)
       }
-    })
+    }
 
-    //函数防抖
-    let timeOut
-    content.addEventListener('scroll', ev => {
+
+    function scrollEnd(ev) {
       if (timeOut !== undefined) {
         clearTimeout(timeOut)
       }
       timeOut = setTimeout(() => {
         lastContentY = content.scrollTop
       }, 200)
-    })
+    }
+
+    //函数防抖
+    let timeOut
 
     function formatHeight() {
       if (header.clientHeight < _this.navShrinkHeight) {
         header.style.height = _this.navShrinkHeight + 'px'
       }
-      if (header.clientHeight>=_this.navExpandHeight){
+      if (header.clientHeight >= _this.navExpandHeight) {
         header.style.height = _this.navExpandHeight + 'px'
       }
     }
-  },
-  beforeDestroy() {
-    document.documentElement.style.overflowY = 'auto'
+
+    window.addEventListener('touchstart', start)
+    window.addEventListener('touchmove', move)
+    window.addEventListener('touchend', end)
+    content.addEventListener('scroll', scrollEnd)
+
+    this.$on('hook:beforeDestroy', () => {
+      console.log('销毁事件')
+      window.removeEventListener('touchstart',start)
+      window.removeEventListener('touchmove',move)
+      window.removeEventListener('touchend',end)
+      content.removeEventListener('scroll',scrollEnd)
+      document.documentElement.style.overflowY = 'auto'
+    })
   }
 }
 </script>
@@ -157,6 +175,7 @@ export default {
   object-fit: cover;
   position: absolute;
 }
+
 .root {
   height: 100%;
   width: 100%;
@@ -174,20 +193,23 @@ export default {
   width: 100%;
   overflow-y: hidden;
 }
-#mask{
+
+#mask {
   z-index: 8;
   height: 100%;
   width: 100%;
   position: absolute;
   pointer-events: none;
 }
-#imgMask{
+
+#imgMask {
   height: 100%;
   width: 100%;
   position: absolute;
-  background-color: rgba(0,0,0,0.45);
+  background-color: rgba(0, 0, 0, 0.45);
   pointer-events: none;
 }
+
 #headerRoot {
   position: relative;
   height: 100%;

@@ -8,7 +8,7 @@
         <van-swipe-item><img src="http://i5.7k7kimg.cn/cms/cms10/20210304/142402_3507.jpg"></van-swipe-item>
       </van-swipe>
     </div>
-    <RecommendArticle :rows="rows"></RecommendArticle>
+    <RecommendArticle ></RecommendArticle>
   </div>
 </template>
 
@@ -23,14 +23,10 @@ export default {
   },
   data() {
     return {
-      rows: null,
     }
   },
   mounted() {
-    request.get("/article/get").then(res => {
-      console.log(res);
-      this.rows = res.rows
-    })
+
   }
 }
 </script>

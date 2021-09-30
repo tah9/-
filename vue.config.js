@@ -9,7 +9,8 @@ module.exports = {
         //以上的ip和端口是我们本机的;下面为需要跨域的
         proxy: {
             '/api': {
-                target: 'http://localhost:9001',//这里后台的地址模拟的;应该填写你们真实的后台接口
+                target: 'http://localhost:9001',
+                // target: 'http://test.free.svipss.top',
                 ws: true,//允许跨域
                 changOrigin: true,//允许跨域
                 pathRewrite: {
