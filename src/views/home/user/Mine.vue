@@ -1,22 +1,35 @@
 <template>
   <div class="root">
     <div class="top">
-      <div class="pure_top"></div>
+      <van-icon name="/api/graduate/emoji/systeam/通知.jpg"/>
+      <span @click="$router.push('/publishArticle')">+</span>
     </div>
     <div class="user_mess">
-      <van-cell center size="large" @click="$router.push('/main/mine/usermess')" is-link value="个人主页">
-        <van-image round fit="cover" slot="title"
-                   width="5rem"
-                   height="5rem"
-                   :src="user.avatar_url"></van-image>
-        <div slot="label">{{ user.username }}</div>
-      </van-cell>
-      <van-cell-group inset ce>
-        <van-cell center title="身份认证" label="人脸信息">
-          <van-button round plain type="primary" size="small">已录入</van-button>
-        </van-cell>
-      </van-cell-group>
+      <img :src="user.userAvatar">
+      <div class="name">
+        {{user.username}}
+      </div>
+      <van-icon name="arrow" class="arrow"/>
     </div>
+    <div class="follower">
+        <span>
+          <h3>30</h3>
+          动态
+        </span>|
+      <span>
+          <h3>30</h3>
+          关注
+        </span>|
+      <span>
+          <h3>30</h3>
+          粉丝
+        </span>
+    </div>
+    <van-cell-group inset ce>
+      <van-cell center title="身份认证" label="人脸信息">
+        <div class="facebtn">已录入</div>
+      </van-cell>
+    </van-cell-group>
     <div class="top2">
       <van-cell-group inset ce>
         <van-cell center title="总运动" label="100分钟" is-link>
@@ -36,7 +49,7 @@ export default {
   name: "Mine",
   data() {
     return {
-      user: this.$root.user,
+      user: this.$root.getUser(),
     }
   },
   methods: {
@@ -47,45 +60,87 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .root {
   display: flex;
   flex-direction: column;
+  padding: @item-margin;
+  background: @bg-color;
 }
-
+.user_mess {
+  border-radius: @item-margin;
+  display: flex;
+  padding: @item-margin;
+}
+.name {
+  flex: 1;
+}
+.user_mess img {
+  width: 5em;
+  height: 5em;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.arrow{
+  align-self: center;
+}
+.root *{
+  margin: 5px 0;
+  background-color: white;
+}
 .top {
-  /*position: relative;*/
+  background-color: @bg-color;
+  display: flex;
+  justify-content: right;
 }
 
-/*.user_mess {*/
-/*  bottom: 0;*/
-/*}*/
-
-.pure_top {
-  width: 100%;
-  height: 100px;
-  position: relative;
-  z-index: -1;
-  overflow: hidden;
-  top: 0;
-  bottom: 0;
+.top span {
+  float: right;
+  text-align: center;
+  line-height: @icon-img-wh;
+  width: @icon-img-wh;
+  height: @icon-img-wh;
+  background: @theme-color;
+  border-radius: 50px;
+  color: white;
+  flex-shrink: 0;
 }
 
-.pure_top::after {
-  content: '';
-  width: 140%;
-  height: 100px;
-  position: absolute;
-  left: -20%;
-  top: 0;
-  z-index: -1;
-  border-radius: 0 0 50% 50%;
-  background: #1496f1;
-
+.top img {
+  width: @icon-img-wh;
+  height: @icon-img-wh;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-right: 20px;
 }
 
 .top2 {
   display: flex;
   justify-content: space-around;
+}
+.follower {
+  border-radius: @item-margin;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.follower h3{
+  text-align: center;
+  color: #000000;
+  font-size: 2.5em;
+}
+.follower span{
+  color: @gay-font;
+  font-size: 0.5em;
+}
+.facebtn {
+  height: 32px;
+  width: 80px;
+  text-align: center;
+  line-height: 32px;
+  margin-left: auto;
+  color: @theme-color;
+  border-radius: 50px;
+  border: 1px solid @theme-color;
 }
 </style>

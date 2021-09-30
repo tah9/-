@@ -115,7 +115,7 @@ function getImg(video) {
     canvas.height = video.videoHeight;
     canvas.getContext('2d').drawImage(video, 0, 0);
     //返回去除头信息的base64
-    return canvas.toDataURL("image/png").split(',')[1]
+    return canvas.toDataURL("image/jpeg").split(',')[1]
 }
 
 export {

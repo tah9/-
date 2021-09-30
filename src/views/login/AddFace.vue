@@ -46,7 +46,7 @@ export default {
         image: image,
         image_type: "BASE64",
         group_id: "1",
-        user_id: this.$route.params.phone_number,
+        uid: this.$route.params.phone_number,
         user_info: this.$root.token
       }
       request.post(this.baiduUrl + '/faceset/user/add', jsonData)

@@ -1,27 +1,33 @@
 <template>
-<div>
-  <router-view></router-view>
-  <van-tabbar v-model="active">
-    <van-tabbar-item icon="home-o" @click="$router.replace('/main/home')">标签</van-tabbar-item>
-    <van-tabbar-item icon="search" @click="$router.replace('/main/center')">标签</van-tabbar-item>
-    <van-tabbar-item icon="user-o" @click="$router.replace('/main/mine')">我</van-tabbar-item>
-  </van-tabbar>
-</div>
+  <div>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
+    <van-tabbar v-model="active" z-index="999" route active-color="#0f9d58">
+        <van-tabbar-item icon="wap-home" replace to="/main/home">首页</van-tabbar-item>
+      <van-tabbar-item icon="search" replace to="/main/center">标签</van-tabbar-item>
+      <van-tabbar-item icon="manager" replace to="/main/mine">我</van-tabbar-item>
+    </van-tabbar>
+  </div>
 </template>
 
 <script>
+import request from "@/network/request";
+
 export default {
   name: "Home",
-  data(){
-    return{
-      active:2
+  data() {
+    return {
+      active: 2
     }
   },
-  methods:{
+  methods: {},
+  mounted() {
+
   }
 }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 
 </style>

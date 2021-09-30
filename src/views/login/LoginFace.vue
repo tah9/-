@@ -45,7 +45,7 @@ export default {
     },
     faceLogin(faceUser) {
       let data = {
-        phone_number: faceUser.user_id,
+        phone_number: faceUser.uid,
         token: faceUser.user_info
       }
       console.log(data);

@@ -9,7 +9,6 @@
 
 <script>
 
-import {openUserMedia, syncStopTrack} from "@/untils/CameraUntil";
 
 export default {
   name: "Probe",

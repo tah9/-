@@ -53,7 +53,7 @@ export default {
     registerUp() {
       request.post('/user/register', this.user).then(res => {
         if (res.code===200){
-          this.$root.token=res.token
+          Storage.setItem("token",res.token)
           this.registerFinish = true
         }else{
           Toast.fail(res.msg)
@@ -72,16 +72,13 @@ export default {
   grid-template-rows:auto auto auto;
   grid-template-columns: 1fr auto 1fr;
 }
-
+.facebtn {
+  grid-column-start: 2;
+}
 h2 {
   text-align: center;
   grid-column-start: 2;
 }
-
-.facebtn {
-  grid-column-start: 2;
-}
-
 a {
   grid-column-start: 3;
   grid-row-start: 3;

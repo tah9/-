@@ -10,13 +10,18 @@ const Mine = () => import("../views/home/user/Mine")
 const Center = () => import("../views/home/center/Center")
 const Home = () => import("../views/home/home/Home")
 const UserMess = () => import("../views/home/user/UserMess")
-const Box = () => import('../views/box/DepositBox')
+const Box = () => import('../views/box/Box')
 const Probe = () => import('../views/Probe/Probe')
-const Test = () => import('../views/WebCamDistinguish')
+const EnterExit = () => import('../views/EnterExit')
 const Test2 = () => import('../views/WebCam')
+const HumanTest = () => import('../views/HumanTest')
 
 Vue.use(VueRouter)
 const routes = [
+    {
+        path: "/",
+        redirect: '/login'
+    },
     {
         path: "/login",
         component: Login,
@@ -46,7 +51,7 @@ const routes = [
         ]
     },
     {
-        path: '/main/mine/usermess',
+        path: '/user/:uid',
         component: UserMess
     }, {
         path: '/box',
@@ -55,13 +60,30 @@ const routes = [
         path: '/probe/:number',
         component: Probe
     }, {
-        path: '/test1',
-        component: Test
+        path: '/enterexit',
+        component: EnterExit
     }, {
         path: '/test2',
         component: Test2
+    }, {
+        path: '/humantest',
+        component: HumanTest
+    }, {
+        path: '/publishArticle',
+        component: () => import('../views/home/home/PublishArticle')
+    }, {
+        path: '/test',
+        component: () => import('../views/home/user/HeaderBarPage.bak')
+    },{
+        path:'/articleInfo/:id',
+        component:()=>import('../views/home/article/ArticleInfo')
+    },{
+        path:'/onlineChat',
+        component:()=>import('../views/chat/OnlineChat')
+    },{
+        path:'/onlineChat2',
+        component:()=>import('../views/chat/OnlineChat2')
     }
-
 ]
 
 const router = new VueRouter({
