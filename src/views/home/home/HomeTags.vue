@@ -51,7 +51,7 @@ export default {
     num_desc(row){
       let hotnum = row.hot_num
       let feednum = row.feednum
-      return Math.floor(hotnum/1000) + "w热度  " +  Math.floor(feednum/1000) + "w讨论"
+      return '🔥'+Math.floor(hotnum/1000) + "w热度  " +  Math.floor(feednum/1000) + "w讨论"
     },
 
   }

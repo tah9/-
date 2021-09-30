@@ -19,7 +19,7 @@
       </transition>
     </div>
     <div slot="content">
-      <UserContent></UserContent>
+      <UserContent :uid="userInfo.uid"></UserContent>
     </div>
   </HeaderBarPage>
 </template>
@@ -63,13 +63,6 @@ export default {
       console.log(res);
     });
   },
-  mounted() {
-    document.documentElement.style.overflowY = 'hidden'
-    let _this = this
-    this.$nextTick(() => {
-
-    })
-  }
 }
 </script>
 
