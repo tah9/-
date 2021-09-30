@@ -57,8 +57,10 @@ export default {
     }
   },
   created() {
-    let uid=this.$route.params.uid
-    request.get('/user/info/' + uid).then(res => {
+    let username=this.$route.params.username
+    request.post('/user/info' ,{
+      username:username
+    }).then(res => {
       this.userNumber=res
       this.userInfo=res.user
       console.log(res);

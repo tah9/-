@@ -51,7 +51,7 @@ const routes = [
         ]
     },
     {
-        path: '/user/:uid',
+        path: '/u/:username',
         component: UserMess
     }, {
         path: '/box',
