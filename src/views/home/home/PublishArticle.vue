@@ -179,7 +179,7 @@ export default {
   right: 0;
   bottom: 0;
   top: 0;
-  background-color: @gay-bg;
+  background-color: @bg-color;
   display: flex;
   flex-direction: column;
 }

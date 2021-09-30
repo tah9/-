@@ -9,7 +9,7 @@
       </div>
     </div>
     <div class="content" id="content">
-      <div v-for="i in 100">{{ i }}</div>
+      <slot name="content"></slot>
     </div>
   </div>
 </template>
@@ -191,6 +191,7 @@ export default {
 .content {
   height: calc(100% - 65px);
   width: 100%;
+  background-color: @bg-color;
   overflow-y: hidden;
 }
 

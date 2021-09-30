@@ -1,9 +1,4 @@
 <template>
-  <!--  <div id="root">-->
-  <!--    <div id="headers">-->
-
-
-  <!--  </div>-->
   <HeaderBarPage :cover-img="userInfo.cover" v-on:navHide="navHide"
                  :nav-expand-height="navExpandHeight" :nav-shrink-height="navShrinkHeight"
                  :nav-normal-height="navNormalHeight">
@@ -24,7 +19,7 @@
       </transition>
     </div>
     <div slot="content">
-      <div v-for="i in 100">{{ i }}</div>
+      <UserContent></UserContent>
     </div>
   </HeaderBarPage>
 </template>
@@ -33,6 +28,7 @@
 import HeaderBarPage from "@/views/home/user/HeaderBarPage";
 import HeaderInfo from "@/views/home/user/HeaderInfo";
 import request from "@/network/request";
+import UserContent from "@/views/home/user/UserContent";
 
 export default {
   name: "UserMess",
@@ -47,6 +43,7 @@ export default {
     }
   },
   components: {
+    UserContent,
     HeaderInfo,
     HeaderBarPage
   },

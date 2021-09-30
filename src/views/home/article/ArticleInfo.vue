@@ -171,7 +171,7 @@ export default {
 @avt-size: 35px;
 @nav-height: 50px;
 .margin-div {
-  background: @gay-bg;
+  background: @bg-color;
   height: calc(@mymargin / 2 );
 }
 
