@@ -34,10 +34,12 @@ export default {
     let startY, lastContentY = 0
     let oldY
     let up, lastHeight = _this.navNormalHeight
+    let beTouch=false
 
     function start(ev) {
       let touches = ev.touches[0];
       startY = touches.clientY
+      beTouch=true
     }
 
 
@@ -113,6 +115,7 @@ export default {
 
 
     function end(ev) {
+      beTouch=false
       lastHeight = header.clientHeight
       //高度大于普通高度，触发回弹动画
       if (lastHeight >= _this.navNormalHeight) {
@@ -130,17 +133,20 @@ export default {
     }
 
 
-    function scrollEnd(ev) {
+    //函数防抖
+    let timeOut
+    function beScroll(ev) {
       if (timeOut !== undefined) {
         clearTimeout(timeOut)
       }
+      if (beTouch){
+        return
+      }
       timeOut = setTimeout(() => {
         lastContentY = content.scrollTop
-      }, 200)
+      }, 1)
     }
 
-    //函数防抖
-    let timeOut
 
     function formatHeight() {
       if (header.clientHeight < _this.navShrinkHeight) {
@@ -154,14 +160,14 @@ export default {
     window.addEventListener('touchstart', start)
     window.addEventListener('touchmove', move)
     window.addEventListener('touchend', end)
-    content.addEventListener('scroll', scrollEnd)
+    content.addEventListener('scroll', beScroll)
 
     this.$on('hook:beforeDestroy', () => {
       console.log('销毁事件')
       window.removeEventListener('touchstart',start)
       window.removeEventListener('touchmove',move)
       window.removeEventListener('touchend',end)
-      content.removeEventListener('scroll',scrollEnd)
+      content.removeEventListener('scroll',beScroll)
       document.documentElement.style.overflowY = 'auto'
     })
   }
@@ -180,7 +186,6 @@ export default {
   height: 100%;
   width: 100%;
   position: fixed;
-  overflow-y: hidden;
 }
 
 .header {

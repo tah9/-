@@ -6,7 +6,7 @@
       <van-icon name="/api/graduate/emoji/systeam/通知.jpg"/>
       <span @click="$router.push('/publishArticle')">+</span>
     </div>
-    <van-tabs v-model="active" class="tab-root" sticky >
+    <van-tabs v-model="active" class="tab-root" sticky color="#0f9d58">
       <van-tab title="关注" class="tab-item">
         <HomeFocusOn></HomeFocusOn>
       </van-tab>
