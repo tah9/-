@@ -71,9 +71,6 @@ const routes = [
     }, {
         path: '/publishArticle',
         component: () => import('../views/home/home/PublishArticle')
-    }, {
-        path: '/test',
-        component: () => import('../views/home/user/HeaderBarPage.bak')
     },{
         path:'/articleInfo/:id',
         component:()=>import('../views/home/article/ArticleInfo')
