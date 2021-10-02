@@ -1,12 +1,15 @@
 <template>
-  <div class="tab-item">
-    <van-list v-model="loading" :finished="finshed" @load="onLoad" offset="0">
+  <div>
+    <tags-module :rows="rows"></tags-module>
+    <van-list v-model="loading" :finished="finshed" @load="onLoad">
       <van-cell-group v-for="(row,i) in rows" :key="i">
-        <van-cell :title="row.title" :label="num_desc(row)"  is-link :center=true>
+        <van-cell :title="row.title" is-link :center=true>
+          <div slot="label">
+            <van-icon name="fire-o" size="10" color="red"></van-icon>
+            {{num_desc(row)}}</div>
           <van-icon slot="icon" :name="row.logo" size="60"></van-icon>
         </van-cell>
       </van-cell-group>
-<!--      <van-loading vertical size="20">加载中...</van-loading>-->
     </van-list>
   </div>
 </template>
@@ -15,26 +18,33 @@
 
 import Probe from "../../Probe/Probe";
 import request from "@/network/request";
-import Login from "@/views/login/Login";
+import TagsModule from "@/views/home/home/compone/TagsModule";
 export default {
   name: "HomeTags",
-  components: {Probe},
+  components: {
+    Probe,
+    TagsModule
+  },
   data(){
     return {
       rows: [],
       page:1,
       loading: false,
-      finshed:false
+      finshed:false,
     }
   },
   created() {
-    // this.getList()
+    this.clientW = document.body.clientWidth
   },
   computed:{
-
+    styleCVar(){
+      return {
+        '@clientW':this.clientW + 'px'
+      }
+    }
   },
   methods:{
-    getList(page){
+    getList(){
       request.get("tag/all?pagerNum=" + this.page).then( res => {
         this.rows = this.rows.concat(res)
         console.log(this.rows.length)
@@ -51,7 +61,7 @@ export default {
     num_desc(row){
       let hotnum = row.hot_num
       let feednum = row.feednum
-      return Math.floor(hotnum/1000) + "w热度  " +  Math.floor(feednum/1000) + "w讨论"
+      return Math.floor(hotnum/100)/10 + "w热度  " +  Math.floor(feednum/100)/10 + "w讨论"
     },
 
   }
@@ -59,6 +69,7 @@ export default {
 </script>
 
 <style scoped lang="less">
+
 .van-cell__title{
   margin-left: 10px;
 }
