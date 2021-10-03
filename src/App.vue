@@ -7,9 +7,14 @@
 // todo 话题分析：平均回复数。帖子数量。总热度。。。
 </script>
 <style lang="less">
-body{
-  //关闭手机浏览器下拉刷新
-  //overflow: hidden;
+html::-webkit-scrollbar{
+  display: none;
+}
+
+
+html{
+  scrollbar-width: none;
+
 }
 .feed-link-tag,.feed-link-uname{
   color: @theme-color;

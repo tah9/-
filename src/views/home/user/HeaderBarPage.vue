@@ -21,7 +21,8 @@ export default {
     navNormalHeight: 0,
     navShrinkHeight: 0,
     navExpandHeight: 0,
-    coverImg: ''
+    coverImg: '',
+    notScrollFilter:''
   },
   mounted() {
     let _this = this;
@@ -31,20 +32,25 @@ export default {
 
     document.documentElement.style.overflowY = 'hidden'
 
+    let startX
     let startY, lastContentY = 0
     let oldY
     let up, lastHeight = _this.navNormalHeight
-    let beTouch=false
+    let beTouch = false
 
     function start(ev) {
       let touches = ev.touches[0];
+      startX=touches.clientX
       startY = touches.clientY
-      beTouch=true
+      beTouch = true
     }
 
 
     function move(ev) {
       let touches = ev.touches[0]
+      if (touches.target.className.includes(_this.notScrollFilter)/*&&Math.abs(touches.clientX-startX)+50>Math.abs(touches.clientY-startY)*/){
+        return
+      }
       //第一次移动仅获取坐标，不进行其他操作
       if (oldY === undefined) {
         oldY = touches.clientY
@@ -115,8 +121,9 @@ export default {
 
 
     function end(ev) {
-      beTouch=false
+      beTouch = false
       lastHeight = header.clientHeight
+      lastContentY = content.scrollTop
       //高度大于普通高度，触发回弹动画
       if (lastHeight >= _this.navNormalHeight) {
         let interval = setInterval(() => {
@@ -135,11 +142,25 @@ export default {
 
     //函数防抖
     let timeOut
+    // let beSend=false
+
     function beScroll(ev) {
+
+      // if ((content.scrollTop + content.clientHeight) === content.scrollHeight) {
+      //   console.log('到底了');
+      //   if (!beSend){
+      //     _this.$emit('beBottom')
+      //     beSend=true
+      //     console.log('fasong')
+      //     setTimeout(() => {
+      //       beSend=false
+      //     }, 1000)
+      //   }
+      // }
       if (timeOut !== undefined) {
         clearTimeout(timeOut)
       }
-      if (beTouch){
+      if (beTouch) {
         return
       }
       timeOut = setTimeout(() => {
@@ -164,10 +185,10 @@ export default {
 
     this.$on('hook:beforeDestroy', () => {
       console.log('销毁事件')
-      window.removeEventListener('touchstart',start)
-      window.removeEventListener('touchmove',move)
-      window.removeEventListener('touchend',end)
-      content.removeEventListener('scroll',beScroll)
+      window.removeEventListener('touchstart', start)
+      window.removeEventListener('touchmove', move)
+      window.removeEventListener('touchend', end)
+      content.removeEventListener('scroll', beScroll)
       document.documentElement.style.overflowY = 'auto'
     })
   }

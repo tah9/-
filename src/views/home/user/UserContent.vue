@@ -1,10 +1,24 @@
 <template>
   <div class="content-view">
-    <div class="text-div">他的热门动态
+    <div class="he-follow">
+      <div class="text-div">他关注的人
+        <van-icon name="arrow"/>
+      </div>
+      <div class="he-follow-list">
+        <div class="follow-item" v-for="follow in follows">
+          <div class="follow-item-root">
+            <img :src="follow.userAvatar" class="follow-item-avt">
+            <div class="follow-item-name">{{follow.username}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-div2">他的热门动态
       <van-icon name="arrow"/>
     </div>
-    <div class="list-view">
+    <div class="list-view" >
       <ListItem :item="item" v-for="item in rows"></ListItem>
+<!--      <van-loading color="#0f9d58" />-->
     </div>
   </div>
 </template>
@@ -21,23 +35,33 @@ export default {
   },
   data() {
     return {
-      rows: null
+      rows: null,
+      follows:null,
     }
   },
   components: {
     ListItem,
     RecommendArticle
   },
+  created() {
+    let _this=this
+    this.$nextTick(()=>{
+
+    })
+  },
   watch:{
     uid(nv,ov){
       if (nv!==null)
-      request.get("/article/user/"+nv+ "?pagerSize=1000").then(res => {
+      request.get("/article/get?searchUid="+nv+"&pagerSize=1000").then(res => {
         if (this.rows === null) {
           this.rows = res.rows
         } else {
           this.rows.push(...res.rows)
         }
         this.loading = false
+      })
+      request.get('/user/allFollow/'+nv).then(res=>{
+       this.follows=res
       })
     }
   }
@@ -46,6 +70,46 @@ export default {
 
 <style scoped lang="less">
 .content-view {
+  background: @bg-color;
+}
+.he-follow{
+  margin: @item-margin;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.follow-item-name{
+  text-align: center;
+  width: 5em;
+  height: 3em;
+  font-size: 14px;
+  white-space: pre-wrap;
+  word-break:break-all
+}
+.follow-item-root{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.follow-item-avt {
+  border-radius: 50%;
+  width: 4em;
+  height: 4em;
+  margin-left: 0.5em;
+  overflow: hidden;
+}
+.he-follow-list{
+  width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.he-follow-list::-webkit-scrollbar{
+  display: none;
+}
+.follow-item{
+  display: inline-block;
+  padding: 0 @item-margin;
 }
 .list-view {
   display: flex;
@@ -53,6 +117,11 @@ export default {
 }
 .text-div {
   padding: @item-margin;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}.text-div2 {
+  padding: 0 @item-margin @item-margin @item-margin  ;
   display: flex;
   justify-content: space-between;
   align-items: center;

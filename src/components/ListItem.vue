@@ -1,5 +1,5 @@
 <template>
-  <div class="list-item" @click="contentInfo(item.id)">
+  <div class="list-item" @click="contentInfo(item.id,$event)">
     <div class="item-top">
       <img class="item-avt-img" :src="item.userAvatar" @click="toUserInfo(item.username)">
       <span class="list-item-avt-title">{{ item.username }}</span>
@@ -9,9 +9,11 @@
         </span>
       <van-icon name="arrow-down" class="arr-bottom" color="#666666"/>
     </div>
-    <div class="list-item-content" contenteditable="plaintext-only" v-html="formatContent(item.message)"></div>
+    <div class="list-item-content" onfocus="this.blur()" @click="contentClick($event)"
+         contenteditable="plaintext-only" v-html="formatContent(item.message)"></div>
     <div class="list-item-pics">
-      <img v-for="(url,index) in item.picArr" :src="url" @click="clickImg(item.picArr,index)"/>
+      <img v-if="item.pic.length>0" v-for="(url,index) in item.pic.split(',')" :src="url"
+           @click="clickImg(item.pic.split(','),index)"/>
     </div>
     <div class="first-comment" v-if="'firstComment' in item.other">
       <div class="comment-like-number">
@@ -21,7 +23,7 @@
     </div>
     <div class="item-bottom">
         <span class="list-item-bottom-span" @click="like(item)">
-          <van-icon class="bottom-icon" name="good-job" v-show="'like' in item.other"/>
+          <van-icon class="bottom-icon" name="good-job" color="#0f9d58" v-show="'like' in item.other"/>
           <van-icon class="bottom-icon" name="good-job-o" v-show="!('like' in item.other)"/>
           <span>&nbsp;{{ item.likenum }}</span>
         </span>
@@ -46,20 +48,28 @@ export default {
     item: null,
   },
   methods: {
-    setFirstComment(comment){
-      let result=''
-      let uname=document.createElement('span')
-      uname.className='first-comment-name'
-      uname.innerText=comment.username
-      result+=uname.outerHTML
-      if (comment.uid===this.item.uid){
-        let lou=document.createElement('span')
-        lou.className="lou"
-        lou.innerText='楼主'
-        result+=lou.outerHTML
+    contentClick(e) {
+      let node = e.target;
+      if (node.nodeName === 'A') {
+        let url = node.getAttribute('href');
+        this.$router.push(url)
+        event.stopPropagation()
       }
-      result+="："
-      result+=this.formatContent(comment.message)
+    },
+    setFirstComment(comment) {
+      let result = ''
+      let uname = document.createElement('span')
+      uname.className = 'first-comment-name'
+      uname.innerText = comment.username
+      result += uname.outerHTML
+      if (comment.uid === this.item.uid) {
+        let lou = document.createElement('span')
+        lou.className = "lou"
+        lou.innerText = '楼主'
+        result += lou.outerHTML
+      }
+      result += "："
+      result += this.formatContent(comment.message)
       return result
     },
     clickImg(picArr, index) {
@@ -72,7 +82,7 @@ export default {
     getTime(oldTime) {
       return getTime(oldTime)
     },
-    contentInfo(id) {
+    contentInfo(id, e) {
       this.$router.push('/articleInfo/' + id)
     },
     toUserInfo(username) {
@@ -100,11 +110,57 @@ export default {
       }
     },
     formatContent(str) {
+      function getLength(str) {
+        let strLength = 0; // 记录str的总长度
+        let Len = str.length;
+        for (let i = 0; i < Len; i++) {
+          let charCode = str.charCodeAt(i);// 使用charCodeAt返回单个字符的Unicode编码
+          if (charCode >= 0 && charCode <= 128) {
+            strLength++; //英文字符加1
+          } else {
+            strLength = strLength + 2;//中文字符加2
+          }
+        }
+        return strLength;
+      }
+
+      function subStrNum(str, len) {
+        let strLen = str.length;
+        let strCut = '';
+        let strLength = 0;
+        for (let i = 0; i < strLen; i++) {
+          let charStr = str.charAt(i); //使用charAt获取单个字符；
+          strLength++
+          if (encodeURI(charStr).length > 4) { //使用encodeURI获取编码长度
+            strLength++;
+          }
+          strCut = strCut.concat(charStr);//单个字符进行合并
+          if (strLength >= len) {
+            strCut = strCut.concat('...') //大于指定长度后合并'...'并返回此字符串
+            return strCut;
+          }
+
+        }
+        if (strLength < len) {
+          return str
+        }
+      }
+
+      console.log(str + getLength(str));
+      // let more
+      // if (str.length>105){
+      //   str=str.substring(0,105)
+      //   more=true
+      // }
       let head = '<img ' + this.dataV + ' src="/api/graduate/emoji/'
       let end = '.jpg" class="content-emoji">'
       str = str.replace(new RegExp('\\[', "gm"), head)
       str = str.replace(new RegExp(']', "gm"), end)
-      str = str + '...<a href="" style="color: #0f9d58">查看更多</a>'
+      // if (more){
+      //   str = str + '...<a href="" style="color: #0f9d58">查看更多</a>'
+      // }
+      //把图片替换回文字>[图片]
+      str = str.replace('<img ' + this.dataV + ' src="/api/graduate/emoji/图片.jpg" class="content-emoji">', '[图片]')
       return str
     }
   },
@@ -120,26 +176,30 @@ export default {
   background-color: @gay-bg;
   overflow: hidden;
 }
-.first-comment-main{
-  padding: calc(@item-margin/2) @item-margin;
+
+.first-comment-main {
+  padding: calc(@item-margin / 2) @item-margin;
   box-sizing: border-box;
-  font-size: 0.5em;
+  font-size: 14px;
 }
-.first-comment-name{
+
+.first-comment-name {
   color: @theme-color;
 }
-.lou{
+
+.lou {
   color: @theme-color;
-  border: 1px solid @theme-color ;
+  border: 1px solid @theme-color;
   text-align: center;
   font-size: 0.5em;
   border-radius: 2px;
   margin-left: 0.5em;
 }
+
 .comment-like-number {
   width: 5em;
   height: 1em;
-  border-radius:0 0 3px 0;
+  border-radius: 0 0 3px 0;
   padding: 2px @item-margin;
   box-sizing: border-box;
   text-align: center;
@@ -226,11 +286,15 @@ export default {
 }
 
 .list-item-pics {
+  width: 100%;
+  height: 100%;
   margin-top: 10px;
   border-radius: 8px;
   display: flex;
   flex-wrap: wrap;
   overflow: hidden;
+  object-fit: cover;
+  margin-bottom: 10px;
 }
 
 .list-item-pics img {

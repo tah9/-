@@ -2,10 +2,11 @@
   <div class="user">
     <div class="top-two">
       <h3 class="name">{{ user.username }}</h3>
+      <div class="user-bio">{{user.bio}}</div>
       <div class="follow">
-        {{ res.likes }}&nbsp;<span>获赞</span>
-        {{ res.focus }}&nbsp;<span>关注</span>
-        {{ res.fans }}&nbsp;<span>粉丝</span>
+        {{ user.be_like_num }}&nbsp;<span>获赞</span>
+        {{ user.follow }}&nbsp;<span>关注</span>
+        {{ user.fans }}&nbsp;<span>粉丝</span>
       </div>
       <span class="time">{{ getTime(user.logintime) }}活跃</span>
     </div>
@@ -45,7 +46,11 @@ export default {
 </script>
 
 <style scoped lang="less">
-
+.user-bio {
+  margin-top: 10px;
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+}
 .top-one {
   display: flex;
   box-sizing: border-box;

@@ -64,9 +64,10 @@ export default {
 
 <style scoped>
 .swiper {
-  overflow: hidden;
+  overflow-y: hidden;
   position: relative;
   width: 100%;
+  overflow-x: scroll;
 }
 
 .wrap {

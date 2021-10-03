@@ -2,7 +2,7 @@
   <div class="root">
     <div class="nav" id="nav">
       <van-icon name="arrow-left" size="1.3em" @click="$router.go(-1)"/>
-      <span style="margin-left: 10px" v-show="!showSmall">动态</span>
+      <span style="margin-left: 10px" v-show="!showSmall&&!isFeedArticle">动态</span>
 
       <transition name="fade">
         <div class="nav-hide" v-show="showSmall">
@@ -16,7 +16,8 @@
       <van-icon name="label-o" size="1.3em" class="right-menu"/>
     </div>
 
-    <div class="content" id="content">
+    <div class="content" id="content" :style="'margin-top:'+(isFeedArticle?0:50)+'px'">
+      <img class="topCover" v-if="isFeedArticle" :src="info.message_cover">
       <div class="main">
         <div class="item-top">
           <img class="avt-img" :src="info.userAvatar"  @click="$router.push('/u/' + info.username)">
@@ -35,7 +36,7 @@
         </div>
       </div>
       <div class="margin-div"></div>
-      <div class="content-bottom">
+      <div class="content-bottom" :style="'top:'+(isFeedArticle?50:0)+'px'">
         <span>赞{{info.likenum}}</span>
         <span>回复{{info.replynum}}</span>
         <span></span> <span></span>
@@ -69,6 +70,11 @@ export default {
       info: {},
       text: '',
       showSmall: false,
+    }
+  },
+  computed:{
+    isFeedArticle(){
+      return this.info.feedType==='feedArticle'
     }
   },
   methods: {
@@ -113,6 +119,13 @@ export default {
 
 <style scoped lang="less">
 @mymargin: 24px;
+@f-size: 1em;
+@mymargin: 12px;
+@avt-size: 35px;
+@nav-height: 50px;
+.topCover{
+  width: 100%;
+}
 .root {
   position: fixed;
   top: 0;
@@ -166,12 +179,9 @@ export default {
   pointer-events: none;
 }
 
-@f-size: 1em;
-@mymargin: 12px;
-@avt-size: 35px;
-@nav-height: 50px;
+
 .margin-div {
-  background: @bg-color;
+  background: @gay-bg;
   height: calc(@mymargin / 2 );
 }
 
@@ -183,7 +193,6 @@ export default {
   display: flex;
   padding: @mymargin;
   justify-content: space-between;
-  top: 0;
 }
 
 .main {
@@ -191,9 +200,8 @@ export default {
 }
 
 .content {
-  margin: @nav-height 0;
   overflow: scroll;
-  height: calc(100% - 2 * @nav-height);
+  height: calc(100% -  @nav-height);
 }
 
 .item-top {
@@ -204,7 +212,6 @@ export default {
 }
 
 .nav {
-  background: white;
   z-index: 9;
   width: 100%;
   position: fixed;

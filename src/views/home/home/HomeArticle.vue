@@ -26,7 +26,7 @@
         </div>
       </div>
     </div>
-    <RecommendArticle url="/article/get"></RecommendArticle>
+    <RecommendArticle></RecommendArticle>
   </div>
 </template>
 

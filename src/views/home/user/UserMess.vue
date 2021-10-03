@@ -1,5 +1,5 @@
 <template>
-  <HeaderBarPage :cover-img="userInfo.cover" v-on:navHide="navHide"
+  <HeaderBarPage :cover-img="userInfo.cover" v-on:navHide="navHide" :not-scroll-filter="'follow-item'"
                  :nav-expand-height="navExpandHeight" :nav-shrink-height="navShrinkHeight"
                  :nav-normal-height="navNormalHeight">
     <div slot="headerInfo" id="headers">
@@ -19,7 +19,7 @@
       </transition>
     </div>
     <div slot="content">
-      <UserContent :uid="userInfo.uid"></UserContent>
+      <UserContent :uid="userInfo.uid" ></UserContent>
     </div>
   </HeaderBarPage>
 </template>
@@ -39,7 +39,7 @@ export default {
       navExpandHeight: 500,
       showSmall: false,
       userNumber:{},
-      userInfo:{}
+      userInfo:{},
     }
   },
   components: {

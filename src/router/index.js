@@ -80,6 +80,8 @@ const routes = [
     },{
         path:'/onlineChat2',
         component:()=>import('../views/chat/OnlineChat2')
+    },{
+        path:'/t/'
     }
 ]
 
