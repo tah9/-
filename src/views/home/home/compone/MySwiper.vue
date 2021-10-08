@@ -69,6 +69,9 @@ export default {
   width: 100%;
   overflow-x: scroll;
 }
+.swiper::-webkit-scrollbar {
+  display: none;
+}
 
 .wrap {
   position: absolute;

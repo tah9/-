@@ -1,18 +1,20 @@
 <template>
   <div class="tab-item">
     <div class="top-list">
-      <div v-for="item in descTags">
+      <div v-for="item in descTags" @click="$router.push('/t/'+item.title.replace('[\\?].*?[0-9]',''))">
         <img :src="item.logo">
         <div>{{ item.title }}</div>
       </div>
     </div>
-    <TabLayout @changeTab="(cur)=>{this.current=cur;this.toggleTagClass(cur)}" class="hot-words">
-      <div :class="index===current?'word-on':''" v-for="(item,index) in hotWords">
+    <TabLayout @changeTab="(cur)=>{this.current=cur;this.toggleTagClass(cur)}"
+               class="hot-words" :style="isTop?'background:white;':''">
+      <div :class="index===current?'word-on':''" v-for="(item,index) in hotWords"
+           :style="isTop&&index!==current?'background:#f2f1f6;':''">
         {{ item }}
       </div>
     </TabLayout>
     <van-list v-model="loading" :finished="finshed" @load="onLoad" offset="0" class="bottom-list">
-      <van-cell-group v-for="(row,i) in rows" :key="i">
+      <van-cell-group v-for="(row,i) in rows" :key="i" @click="$router.push('/t/'+row.title.replace('[\\?].*?[0-9]',''))">
         <van-cell :title="row.title" :label="num_desc(row)" is-link :center=true>
           <van-icon slot="icon" :name="row.logo" size="60"></van-icon>
         </van-cell>
@@ -39,7 +41,8 @@ export default {
       loading: false,
       finshed: false,
       hotWords: null,
-      descTags: null
+      descTags: null,
+      isTop:false
     }
   },
   created() {
@@ -96,7 +99,15 @@ export default {
       let fe = feednum >= 1000 ? Math.floor(feednum / 1000) + "w讨论" : feednum
       return '🔥' + re + fe
     },
-
+  },
+  mounted() {
+    let _this=this
+    function scroll(){
+      let scrollTop = document.documentElement.scrollTop
+      // console.log(scrollTop);
+      _this.isTop=scrollTop>=125
+    }
+    window.addEventListener('scroll',scroll)
   }
 }
 </script>
@@ -111,7 +122,12 @@ export default {
   border-radius: 12px;
   overflow: hidden;
 }
-
+.hot-words {
+  position: sticky;
+  top: 44px;
+  z-index: 3;
+  //background: white;
+}
 .hot-words > * {
   border-radius: 5px;
   line-height: 2em;

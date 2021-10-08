@@ -71,17 +71,27 @@ const routes = [
     }, {
         path: '/publishArticle',
         component: () => import('../views/home/home/PublishArticle')
+    }, {
+        path: '/articleInfo/:id',
+        component: () => import('../views/home/article/ArticleInfo')
+    }, {
+        path: '/onlineChat',
+        component: () => import('../views/chat/OnlineChat')
+    }, {
+        path: '/onlineChat2',
+        component: () => import('../views/chat/OnlineChat2')
+    }, {
+        path: '/t/:tag',
+        component: () => import('../views/home/home/TagsArticle')
     },{
-        path:'/articleInfo/:id',
-        component:()=>import('../views/home/article/ArticleInfo')
+        path: '/pushFeedArticle',
+        component: () => import('../views/home/home/PushFeedArticle')
     },{
-        path:'/onlineChat',
-        component:()=>import('../views/chat/OnlineChat')
+        path: '/friend',
+        component: () => import('../views/home/user/Friend')
     },{
-        path:'/onlineChat2',
-        component:()=>import('../views/chat/OnlineChat2')
-    },{
-        path:'/t/'
+        path: '/editUser',
+        component: () => import('../views/home/user/EditUser')
     }
 ]
 

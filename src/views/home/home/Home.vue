@@ -1,10 +1,10 @@
 <template>
   <div class="root">
     <div class="input-search">
-      <img :src="userAvatar">
+      <img :src="userAvatar"  @click="$router.push('/u/'+username)">
       <input type="search">
       <van-icon name="/api/graduate/emoji/systeam/通知.jpg"/>
-      <span @click="$router.push('/publishArticle')">+</span>
+      <span @click="$router.push('/pushFeedArticle')">+</span>
     </div>
     <van-tabs v-model="active" class="tab-root" sticky color="#0f9d58">
       <van-tab title="关注" class="tab-item">
@@ -35,7 +35,8 @@ export default {
     return {
       active: 1,
       searchValue: '',
-      userAvatar:this.$root.getUser().userAvatar
+      userAvatar:this.$root.getUser().userAvatar,
+      username:this.$root.getUser().username
     }
   },
   components: {

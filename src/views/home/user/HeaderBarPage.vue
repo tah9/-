@@ -202,7 +202,10 @@ export default {
   object-fit: cover;
   position: absolute;
 }
-
+body{
+  //关闭手机浏览器下拉刷新
+  overflow: hidden;
+}
 .root {
   height: 100%;
   width: 100%;

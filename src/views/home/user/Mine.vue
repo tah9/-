@@ -1,42 +1,33 @@
 <template>
   <div class="root">
     <div class="top">
-      <van-icon name="/api/graduate/emoji/systeam/通知.jpg"/>
+      <img src="/api/graduate/emoji/systeam/通知.jpg"/>
       <span @click="$router.push('/publishArticle')">+</span>
     </div>
-    <div class="user_mess">
+    <div class="user_mess" @click="$router.push('/u/'+user.username)">
       <img :src="user.userAvatar">
       <div class="name">
-        {{user.username}}
+        <div>{{ user.username }}</div>
+        <span>ID:{{ user.uid }}</span>
       </div>
       <van-icon name="arrow" class="arrow"/>
     </div>
     <div class="follower">
-        <span>
-          <h3>30</h3>
-          动态
-        </span>|
-      <span>
-          <h3>30</h3>
-          关注
-        </span>|
-      <span>
-          <h3>30</h3>
-          粉丝
-        </span>
+      <span><div>10</div>动态</span>|<span><div>{{ user.follow }}</div>关注</span>|<span><div>{{ user.fans }}</div>粉丝</span></div>
+    <div class="card">
+      <div>生物信息</div>
+      <div style="display: flex;align-items: center">
+        <span class="status">已录入</span>
+        <van-icon name="success"/>
+      </div>
     </div>
-    <van-cell-group inset ce>
-      <van-cell center title="身份认证" label="人脸信息">
-        <div class="facebtn">已录入</div>
-      </van-cell>
-    </van-cell-group>
     <div class="top2">
       <van-cell-group inset ce>
         <van-cell center title="总运动" label="100分钟" is-link>
         </van-cell>
       </van-cell-group>
       <van-cell-group inset ce>
-        <van-cell center title="体重" label="120公斤" is-link>
+        <van-cell center title="总距离" label="100km" is-link>
         </van-cell>
       </van-cell-group>
     </div>
@@ -67,27 +58,48 @@ export default {
   padding: @item-margin;
   background: @bg-color;
 }
+
 .user_mess {
   border-radius: @item-margin;
   display: flex;
   padding: @item-margin;
 }
+
 .name {
   flex: 1;
+  padding-left: 1em;
 }
+
+.name div {
+  margin: 5px 0;
+  font-weight: bold;
+}
+
+.name span {
+  color: gray;
+}
+
 .user_mess img {
-  width: 5em;
-  height: 5em;
+  width: 3.5em;
+  height: 3.5em;
   border-radius: 50%;
   object-fit: cover;
 }
-.arrow{
+
+.status {
+  //border: 1px solid white;
+  //border-radius: 50px;
+  //padding: 3px;
+  //font-size: 14px;
+  //min-width: 4em;
+  //text-align: center;
+  font-weight: bold;
+}
+
+.arrow {
   align-self: center;
 }
-.root *{
-  margin: 5px 0;
-  background-color: white;
-}
+
 .top {
   background-color: @bg-color;
   display: flex;
@@ -115,32 +127,49 @@ export default {
 }
 
 .top2 {
+  align-items: center;
   display: flex;
+  border-radius: 5px;
   justify-content: space-around;
+  background: white;
 }
+
 .follower {
-  border-radius: @item-margin;
+  margin: @item-margin 0;
+  padding: 5px;
+  border-radius: 5px;
   display: flex;
+  background: white;
   justify-content: space-evenly;
   align-items: center;
 }
-.follower h3{
+
+.follower div {
   text-align: center;
   color: #000000;
-  font-size: 2.5em;
+  font-weight: bold;
+  font-size: 1.4em;
 }
-.follower span{
+
+div {
+  size: 1em;
+}
+
+span {
+  font-size: 14px;
+}
+
+.follower span {
   color: @gay-font;
-  font-size: 0.5em;
 }
-.facebtn {
-  height: 32px;
-  width: 80px;
-  text-align: center;
-  line-height: 32px;
-  margin-left: auto;
-  color: @theme-color;
-  border-radius: 50px;
-  border: 1px solid @theme-color;
+
+.card {
+  display: flex;
+  margin: 0 calc(3 * @item-margin);
+  justify-content: space-around;
+  background: rgba(15,157,88,.3);
+  padding: 5px @item-margin;
+  color: white;
+  border-radius: 50% 50% 0 0;
 }
 </style>

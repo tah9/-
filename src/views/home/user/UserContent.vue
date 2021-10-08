@@ -1,7 +1,7 @@
 <template>
   <div class="content-view">
     <div class="he-follow">
-      <div class="text-div">他关注的人
+      <div class="text-div">{{uid===$root.getUser().uid?'我':'他'}}关注的人
         <van-icon name="arrow"/>
       </div>
       <div class="he-follow-list">
@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>
-    <div class="text-div2">他的热门动态
+    <div class="text-div2">{{uid===$root.getUser().uid?'我':'他'}}的热门动态
       <van-icon name="arrow"/>
     </div>
     <div class="list-view" >
@@ -51,18 +51,21 @@ export default {
   },
   watch:{
     uid(nv,ov){
-      if (nv!==null)
-      request.get("/article/get?searchUid="+nv+"&pagerSize=1000").then(res => {
-        if (this.rows === null) {
-          this.rows = res.rows
-        } else {
-          this.rows.push(...res.rows)
-        }
-        this.loading = false
-      })
-      request.get('/user/allFollow/'+nv).then(res=>{
-       this.follows=res
-      })
+      console.log(nv);
+      if (nv!==null){
+        request.get("/article/get?uid="+nv+"&pagerSize=1000").then(res => {
+          if (this.rows === null) {
+            this.rows = res.rows
+          } else {
+            this.rows.push(...res.rows)
+          }
+          this.loading = false
+        })
+        request.get('/user/allFollow/'+nv).then(res=>{
+          console.log(res);
+          this.follows=res.rows
+        })
+      }
     }
   }
 }

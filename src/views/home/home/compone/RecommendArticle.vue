@@ -12,9 +12,9 @@
         <div class="feedArticleList">
           <div v-for="(feed,j) in feedRows" :id="j" class="feed-item" @click="$router.push('/articleInfo/' + feed.id)">
             <img width="100%" height="100px" class="feedImg">
-            <canvas  width="100%" height="100px" style="display: none"></canvas>
-            <div class="feedArticleText">{{ feed.message_title.substring(0,28) }}</div>
-            {{ getColor(j) }}
+            <canvas width="100%" height="100px" style="display: none"></canvas>
+            <div class="feedArticleText">{{ feed.message_title.substring(0, 28) }}</div>
+            {{ getColor(feed.message_cover, j) }}
           </div>
         </div>
       </div>
@@ -47,32 +47,32 @@ export default {
     ListItem
   },
   methods: {
-    getColor(j) {
-      this.$nextTick(()=>{
+    getColor(url, j) {
+      this.$nextTick(() => {
         let item = document.getElementById((j) + '');
         let canvas = item.getElementsByTagName("canvas")[0];
         let ctx = canvas.getContext('2d')
         let img = item.getElementsByTagName("img")[0];
-        img.src = "/api/graduate/articlepics/"+j+".jpg"
-        img.onload = function(){
+        function setBg(){
+          let temp, b
           ctx.drawImage(img, 0, 0);
           let imgData = (ctx.getImageData(0, 0, img.width, img.height)).data  //x开始复制的左上角位置的 x 坐标。 y 开始复制的左上角位置的 y 坐标。 width 将要复制的矩形区域的宽度。 height 将要复制的矩形区域的高度。
-
-          let temp = imgData[0] * 0.299 + imgData[1] * 0.587 + imgData[2] * 0.114;
-          let b = '(' + imgData[0] + ',' + imgData[1] + ',' + imgData[2] + ',' + imgData[3] + ')'
-          // let b = '(' + (imgData[0]+imgData[4]) + ',' + (imgData[1]+ imgData[5]) + ',' + (imgData[2]+ imgData[6]) + ',' + (imgData[3]+imgData[7]) + ')'
-          // let c = '(' + imgData[4] + ',' + imgData[5] + ',' + imgData[6] + ',' + imgData[7] + ')'
-          // let d = '(' + 255 + ',' + 255 + ',' + 255 + ',' + 255 + ')'
-          // console.log(b);
-          // console.log(temp)
+          temp = imgData[0] * 0.299 + imgData[1] * 0.587 + imgData[2] * 0.114;
+          b = '(' + imgData[0] + ',' + imgData[1] + ',' + imgData[2] + ',' + imgData[3] + ')'
           if (temp >= 192) {
             item.style.background = 'black'
-          }
-          else{
+          } else {
             item.style.background = 'rgba' + b
           }
         }
-
+        if (url.includes('image.coolapk.com')){
+          img.src='/api/proxy/forward?url='+url
+          img.onload=setBg
+        }
+        else{
+          img.src = url
+          img.onload = setBg
+        }
       })
     },
     onLoad() {
@@ -124,9 +124,11 @@ export default {
   overflow-x: scroll;
   white-space: nowrap;
 }
-.feedArticleList::-webkit-scrollbar{
+
+.feedArticleList::-webkit-scrollbar {
   display: none;
 }
+
 .feed-item {
   width: 60vw;
   border-radius: 8px;

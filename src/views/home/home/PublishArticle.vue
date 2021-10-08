@@ -29,6 +29,7 @@
 <script>
 import EmojiView from "@/views/home/home/compone/EmojiView";
 import request from "@/network/request";
+import {formatText} from "@/untils/InputUntiil";
 
 export default {
   name: "PublishArticle",
@@ -40,7 +41,7 @@ export default {
       input: null,
       rangeOfInputBox: null,
       fileList: [],
-      dataV:''
+      dataV:'',
     }
   },
   methods: {
@@ -59,16 +60,17 @@ export default {
       let formData = new FormData()
       let data = {
         uid: this.$root.getUser().uid,
-        message: this.getText(),
+        message: formatText(this.input.innerHTML),
         device_title: this.getDeviceTitle(),
         dateline: Date.parse(new Date()) / 1000
       }
       let articleJson = JSON.stringify(data)
       console.log(articleJson);
       formData.append("article", articleJson)
-
+      console.log(this.fileList);
       for (let file of this.fileList) {
         formData.append("file", file.file)
+        console.log('++')
       }
       request.post("/article/create", formData).then(res => {
         console.log(res);
@@ -124,13 +126,9 @@ export default {
   mounted() {
     let _this = this;
     const windowHeight = window.innerHeight
-    const windowWidth = window.innerWidth
     this.$nextTick(() => {
       // this.$refs.input.focus()
       this.input = this.$refs.input
-      this.input.onblur = function () {
-        // _this.rangeOfInputBox = document.getSelection().getRangeAt(0).cloneRange();
-      }
 
       document.onselectionchange = () => {
         let selection = document.getSelection();
@@ -183,13 +181,7 @@ export default {
   display: flex;
   flex-direction: column;
 }
-.content-emoji {
-  width: 20px;
-  height: 20px;
-  pointer-events: none;
-  margin-bottom: 3px;
-  vertical-align: middle;
-}
+
 .root * {
   background-color: white;
 }
@@ -202,13 +194,6 @@ export default {
   overflow-x: hidden;
 }
 
-.insertEmoji {
-  width: 20px;
-  height: 20px;
-  vertical-align: middle;
-  margin-bottom: 3px;
-  pointer-events: none;
-}
 
 .input {
   min-height: 33vh;

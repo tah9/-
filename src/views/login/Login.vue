@@ -12,10 +12,10 @@
             <i class="fas fa-lock"></i>
             <input type="password" placeholder="请输入密码" v-model="user.password"/>
           </div>
-          <input type="submit" value="登录" class="btn solid" @click="login"/>
+          <input type="submit" value="登录" class="btn solid" @click="login" ref="login"/>
           <p class="social-text">其他登录方式</p>
           <div class="social-media">
-              <img class="icon" src="/api/graduate/emoji/systeam/刷脸1.jpg">
+            <img class="icon" src="/api/graduate/emoji/systeam/刷脸1.jpg">
           </div>
         </form>
         <form action="#" class="sign-up-form">
@@ -26,11 +26,11 @@
           </div>
           <div class="input-field">
             <i class="fas fa-phone"></i>
-            <input  placeholder="手机号码"  v-model="user.phone_number"/>
+            <input placeholder="手机号码" v-model="user.phone_number"/>
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
-            <input type="password" placeholder="密码"  v-model="user.password"/>
+            <input type="password" placeholder="密码" v-model="user.password"/>
           </div>
           <input type="submit" class="btn" value="注册账号" @click="register"/>
         </form>
@@ -49,7 +49,7 @@
             去注册
           </button>
         </div>
-        <img src="img/log.svg" class="image" alt="" />
+        <img src="img/log.svg" class="image" alt=""/>
       </div>
       <div class="panel right-panel">
         <div class="content">
@@ -62,7 +62,7 @@
             登录
           </button>
         </div>
-        <img src="img/register.svg" class="image" alt="" />
+        <img src="img/register.svg" class="image" alt=""/>
       </div>
     </div>
     <van-popup class="popup"
@@ -87,34 +87,42 @@ export default {
   data() {
     return {
       user: {
-        username:'',
+        username: '',
         phone_number: '',
         password: '',
       },
       registerFinish: false,
-
+      ok:false,
     }
   },
   mounted() {
-    this.$nextTick(()=>{
+
+    this.$nextTick(() => {
       const sign_in_btn = document.querySelector("#sign-in-btn");
       const sign_up_btn = document.querySelector("#sign-up-btn");
       const container = document.querySelector(".container");
 
       sign_up_btn.addEventListener("click", () => {
         container.classList.add("sign-up-mode");
+
       });
 
       sign_in_btn.addEventListener("click", () => {
         container.classList.remove("sign-up-mode");
+
       });
+      this.$refs.login.click()
+      this.ok=true
+
     })
 
 
   },
   methods: {
     login() {
-      console.log(this.user);
+      if (this.ok===false){
+        return
+      }
       request.post('/user/login', this.user).then(res => {
         console.log(res);
         window.localStorage.setItem("token",res.token)
@@ -125,7 +133,7 @@ export default {
         })
       })
     },
-    register(){
+    register() {
       request.post('/user/register', this.user).then(res => {
         if (res.code===200){
           window.localStorage.setItem("token",res.token)
@@ -141,15 +149,17 @@ export default {
 </script>
 <style scoped src="./style.css"></style>
 <style scoped lang="less">
-@icon-wh:50px;
+@icon-wh: 50px;
 .icon {
   width: @icon-wh;
   height: @icon-wh;
   object-fit: cover;
 }
-.icon:hover{
+
+.icon:hover {
 
 }
+
 .popup {
   /*grid-auto-flow: column;*/
   height: 25%;
@@ -157,13 +167,16 @@ export default {
   grid-template-rows:auto auto auto;
   grid-template-columns: 1fr auto 1fr;
 }
+
 .facebtn {
   grid-column-start: 2;
 }
+
 h2 {
   text-align: center;
   grid-column-start: 2;
 }
+
 a {
   grid-column-start: 3;
   grid-row-start: 3;

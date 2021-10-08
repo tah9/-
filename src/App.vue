@@ -10,18 +10,22 @@
 html::-webkit-scrollbar{
   display: none;
 }
-
-
-html{
-  scrollbar-width: none;
-
+.content-emoji {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-bottom: 3px;
+  pointer-events: none;
+}
+.lou {
+  color: @theme-color;
+  border: 1px solid @theme-color;
+  text-align: center;
+  font-size: 0.5em;
+  border-radius: 2px;
+  margin-left: 0.4em;
 }
 .feed-link-tag,.feed-link-uname{
   color: @theme-color;
 }
-///*body {*/
-///*  background: #27363e;*/
-///*  //margin: 0;*/
-///*  //padding: 0;*/
-///*}*/
 </style>

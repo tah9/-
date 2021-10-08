@@ -11,7 +11,7 @@ export default {
   name: "WebSocketV",
   data() {
     return {
-      uid:'发送方',
+      uid:'a',
       message:'',
       // ws是否启动
       wsIsRun: false,
@@ -67,12 +67,12 @@ export default {
     },
     wsMessageHanler(e) {
       console.log(e);
-      try {
-        let json=JSON.parse(e.data)
-        this.$emit("receiveJson",json)
-      }catch (e){
-        this.$emit("receiveStr",e.data)
-      }
+      // try {
+      //   let json=JSON.parse(e.data)
+      //   this.$emit("receiveJson",json)
+      // }catch (e){
+      //   this.$emit("receiveStr",e.data)
+      // }
     },
     /**
      * ws通信发生错误

@@ -9,7 +9,7 @@
         </span>
       <van-icon name="arrow-down" class="arr-bottom" color="#666666"/>
     </div>
-    <div class="list-item-content" onfocus="this.blur()" @click="contentClick($event)"
+    <div class="list-item-content" onfocus="this.blur()"
          contenteditable="plaintext-only" v-html="formatContent(item.message)"></div>
     <div class="list-item-pics">
       <img v-if="item.pic.length>0" v-for="(url,index) in item.pic.split(',')" :src="url"
@@ -41,6 +41,7 @@
 import {ImagePreview} from "vant";
 import {getTime} from "@/untils/Other";
 import request from "@/network/request";
+import {formatText, textToOld} from "@/untils/InputUntiil";
 
 export default {
   name: "ListItem",
@@ -48,14 +49,6 @@ export default {
     item: null,
   },
   methods: {
-    contentClick(e) {
-      let node = e.target;
-      if (node.nodeName === 'A') {
-        let url = node.getAttribute('href');
-        this.$router.push(url)
-        event.stopPropagation()
-      }
-    },
     setFirstComment(comment) {
       let result = ''
       let uname = document.createElement('span')
@@ -83,7 +76,13 @@ export default {
       return getTime(oldTime)
     },
     contentInfo(id, e) {
-      this.$router.push('/articleInfo/' + id)
+      let node = e.target;
+      if (node.nodeName !== 'A') {
+        this.$router.push('/articleInfo/' + id)
+      } else {
+        let url = node.getAttribute('href');
+        this.$router.push(url)
+      }
     },
     toUserInfo(username) {
       event.stopPropagation()
@@ -94,7 +93,8 @@ export default {
       let data = {
         uid: this.$root.getUser().uid,
         id: item.id,
-        aid: item.uid
+        ruid: item.uid,
+        type: "article"
       }
       console.log(data);
       if ('like' in item.other) {
@@ -110,55 +110,7 @@ export default {
       }
     },
     formatContent(str) {
-      function getLength(str) {
-        let strLength = 0; // 记录str的总长度
-        let Len = str.length;
-        for (let i = 0; i < Len; i++) {
-          let charCode = str.charCodeAt(i);// 使用charCodeAt返回单个字符的Unicode编码
-          if (charCode >= 0 && charCode <= 128) {
-            strLength++; //英文字符加1
-          } else {
-            strLength = strLength + 2;//中文字符加2
-          }
-        }
-        return strLength;
-      }
-
-      function subStrNum(str, len) {
-        let strLen = str.length;
-        let strCut = '';
-        let strLength = 0;
-        for (let i = 0; i < strLen; i++) {
-          let charStr = str.charAt(i); //使用charAt获取单个字符；
-          strLength++
-          if (encodeURI(charStr).length > 4) { //使用encodeURI获取编码长度
-            strLength++;
-          }
-          strCut = strCut.concat(charStr);//单个字符进行合并
-          if (strLength >= len) {
-            strCut = strCut.concat('...') //大于指定长度后合并'...'并返回此字符串
-            return strCut;
-          }
-
-        }
-        if (strLength < len) {
-          return str
-        }
-      }
-
-      console.log(str + getLength(str));
-      // let more
-      // if (str.length>105){
-      //   str=str.substring(0,105)
-      //   more=true
-      // }
-      let head = '<img ' + this.dataV + ' src="/api/graduate/emoji/'
-      let end = '.jpg" class="content-emoji">'
-      str = str.replace(new RegExp('\\[', "gm"), head)
-      str = str.replace(new RegExp(']', "gm"), end)
-      // if (more){
-      //   str = str + '...<a href="" style="color: #0f9d58">查看更多</a>'
-      // }
+      str = textToOld(str)
       //把图片替换回文字>[图片]
       str = str.replace('<img ' + this.dataV + ' src="/api/graduate/emoji/图片.jpg" class="content-emoji">', '[图片]')
       return str
@@ -276,14 +228,6 @@ export default {
   user-select: none;
 }
 
-.content-emoji {
-  width: 20px;
-  height: 20px;
-  object-fit: cover;
-  pointer-events: none;
-  margin-bottom: 3px;
-  vertical-align: middle;
-}
 
 .list-item-pics {
   width: 100%;

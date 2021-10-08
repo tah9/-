@@ -2,8 +2,8 @@
   <div class="root">
     <video width="640" height="480" id="video" autoplay muted></video>
     <canvas width="640" height="480" id="canvas"></canvas>
-    <message @receiveJson="update"></message>
-    <img id="testimg">
+    <message @receiveJson="update" style="display: none"></message>
+    <img id="testimg" style="display: none">
   </div>
 </template>
 
@@ -35,7 +35,7 @@ export default {
                 {
                   video: {
                     width: video.width, height: video.height,
-                    // deviceId: 'ba16a7bf2ca20a5e50062ba1698bb618d5385c50d0f0bf0e5329103d17ead837'
+                    // deviceId: 'ba16a7bf2ca20a5e50062ba1698bb618d5385c50d0f0bf0e5329103d17ead837'//多摄像头时开启指定
                   }, audio: false
                 },
                 stream => video.srcObject = stream,
@@ -46,18 +46,18 @@ export default {
             faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
             faceapi.nets.ssdMobilenetv1.loadFromUri('/models'),
             faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-            request.get('/user/all')
+            request.get('/face/allUser')
           ]).then(start)
           let _this = this;
 
           async function start(respones) {
             const displaySize = {width: video.width, height: video.height}
             faceapi.matchDimensions(canvas, displaySize)
-            await _this.loadAllDescriptor(respones[5])
+            await _this.loadAllDescriptor(respones[5].rows)
             _this.faceMatcher = new faceapi.FaceMatcher(_this.faceDescriptors, 0.5)//匹配偏差，越小越严格，超过0.5以上都为unknow
 
             const options = new faceapi.SsdMobilenetv1Options({
-              // inputSize:608,//》32的倍数，越大越能检测最小的人脸同时更慢。上限608默认416
+              // inputSize:608,//》32的倍数，越大越能检测屏幕内越小的人脸》同时更卡顿。上限608默认416
               //scoreThreshold: 0.8
             })
             const ctx = canvas.getContext('2d')
@@ -83,15 +83,14 @@ export default {
                   drawBox.draw(canvas)
                 }
                 //未记录人脸
-                if (_this.beCheckFace) {//如果正在检查
-                  console.log('被return')
+                if (_this.beCheckFace) {
                   return
                 }
                 //提交检查并上传
                 _this.beCheckFace = true
                 _this.verificationAndUpload(video, box)
               })
-              // faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
+              faceapi.draw.drawFaceLandmarks(canvas, resizedDetections)
             }, 100)
 
           }
@@ -113,6 +112,7 @@ export default {
       ccCtx.drawImage(video, box.x, box.y - offHeight, cWidth, cHeight, 0, 0, cWidth, cHeight)
       return cc.toDataURL("image/jpeg");
     },
+    //检测到未认证人脸标记为游客（已废弃）
     async upload(base) {
       let size = this.faceDescriptors.length + 1
       let name = '游客' + (size < 10 ? '0' + size : size)
@@ -202,6 +202,7 @@ export default {
       return labeledFaceDescriptors
     },
     async loadAllDescriptor(names) {
+      console.log(names);
       for (let name of names) {
         let item = await this.loadOneDescriptor(name);
         if (item.descriptors.length > 0) {

@@ -1,7 +1,7 @@
 <template>
   <div class="navbar">
-    <div class="left" @click="$router.go(-1)">
-      <van-icon name="arrow-left" color="#1989FA"/>
+    <div class="left" @click="leftClick">
+      <van-icon name="arrow-left" color="#0f9d58"/>
       <!--<span>返回</span>-->
     </div>
     <div class="center">{{ title }}</div>
@@ -15,9 +15,21 @@ export default {
     return {};
   },
   props: {
-    title:''
+    title: '',
+    canExit: {
+      default: true
+    }
   },
   components: {},
+  methods: {
+    leftClick() {
+      if (this.exit) {
+        this.$router.go(-1)
+      } else {
+        this.$emit('exit')
+      }
+    }
+  }
 };
 </script>
 
@@ -49,7 +61,7 @@ export default {
   padding: 16px;
   display: flex;
   align-items: center;
-  color: #1989FA;
+  color: #0f9d58;
 
 }
 

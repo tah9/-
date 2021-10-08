@@ -2,7 +2,7 @@
   <div class="user">
     <div class="top-two">
       <h3 class="name">{{ user.username }}</h3>
-      <div class="user-bio">{{user.bio}}</div>
+      <div class="user-bio">{{ user.bio }}</div>
       <div class="follow">
         {{ user.be_like_num }}&nbsp;<span>获赞</span>
         {{ user.follow }}&nbsp;<span>关注</span>
@@ -13,7 +13,8 @@
 
     <div class="top-one">
       <img @click="bigImg(user.userAvatar)" :src="user.userAvatar" class="avtimg">
-      <div class="btn" @click="toFocus">关注</div>
+      <FollowBtn class="btn" v-if="user.uid!==$root.getUser().uid"></FollowBtn>
+      <div class="btn2" v-else @click="$router.push('/editUser')">编辑资料</div>
       <img src="/api/graduate/emoji/systeam/邮箱.jpg" class="emailimg">
     </div>
   </div>
@@ -22,6 +23,7 @@
 <script>
 import {getTime} from "@/untils/Other";
 import {ImagePreview} from "vant";
+import FollowBtn from "@/components/FollowBtn";
 
 export default {
   props: {
@@ -29,7 +31,7 @@ export default {
     user: {}
   },
   methods: {
-    getTime(oldTime){
+    getTime(oldTime) {
       return getTime(oldTime)
     },
     bigImg(url) {
@@ -41,6 +43,9 @@ export default {
   },
   name: "HeaderInfo",
   created() {
+  },
+  components: {
+    FollowBtn
   }
 }
 </script>
@@ -48,9 +53,10 @@ export default {
 <style scoped lang="less">
 .user-bio {
   margin-top: 10px;
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 14px;
 }
+
 .top-one {
   display: flex;
   box-sizing: border-box;
@@ -59,7 +65,6 @@ export default {
   align-items: center;
   justify-content: flex-end;
   margin-bottom: 1em;
-
 }
 
 .name {
@@ -99,13 +104,21 @@ export default {
 
 .btn {
   margin-right: 1em;
-  color: white;
   height: 40px;
   line-height: 40px;
-  width: 8em;
+  width: 6em;
+}
+
+.btn2 {
+  margin-right: 1em;
+  height: 40px;
+  line-height: 40px;
+  width: 6em;
+  color: white;
   text-align: center;
   border-radius: 40px;
-  background-color: @theme-color;
+  background-color: rgba(238, 238, 238, 0.5);
+
 }
 
 .follow {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <MySwiper sleep-time="3000" :height="'40vh'">
+    <MySwiper sleep-time="3000" :height="'100px'" class="swiper">
       <div><img class="test" src="https://img01.yzcdn.cn/vant/cat.jpeg"></div>
       <div><img class="test" src="https://t7.baidu.com/it/u=4198287529,2774471735&fm=193&f=GIF"></div>
       <div><img class="test" src="https://t7.baidu.com/it/u=1956604245,3662848045&fm=193&f=GIF"></div>
@@ -20,7 +20,7 @@ export default {
 </script>
 
 <style scoped>
-.test{
-  height: 40vh;
+.swiper{
+  object-fit: cover;
 }
 </style>

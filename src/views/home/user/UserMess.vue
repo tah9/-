@@ -9,7 +9,7 @@
         <div class="nav-hide" v-show="showSmall">
           <img :src="userInfo.userAvatar" class="nav-avt">
           <h4>{{userInfo.username}}</h4>
-          <div>关注</div>
+          <FollowBtn :is-follow="userInfo.isFollow" v-if="userInfo.uid!==$root.getUser().uid"></FollowBtn>
         </div>
         </transition>
         <van-icon name="label-o" size="1.5em" color="#ffffff" class="right-menu"/>
@@ -29,6 +29,7 @@ import HeaderBarPage from "@/views/home/user/HeaderBarPage";
 import HeaderInfo from "@/views/home/user/HeaderInfo";
 import request from "@/network/request";
 import UserContent from "@/views/home/user/UserContent";
+import FollowBtn from "@/components/FollowBtn";
 
 export default {
   name: "UserMess",
@@ -43,6 +44,7 @@ export default {
     }
   },
   components: {
+    FollowBtn,
     UserContent,
     HeaderInfo,
     HeaderBarPage
@@ -63,6 +65,7 @@ export default {
       console.log(res);
     });
   },
+
 }
 </script>
 

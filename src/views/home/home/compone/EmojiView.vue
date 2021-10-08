@@ -1,11 +1,11 @@
-<template >
+<template>
   <van-swipe class="bot-emoji" :style="'height:'+myBottom+'px'"
-             v-show="myBottom!==0"  ondragstart="return false"
+             v-show="myBottom!==0"
              indicator-color="#757575">
-    <van-swipe-item v-for="(data,page) in emojiData" >
-      <div class="emoji-row" ref="test" :key="page" 
+    <van-swipe-item v-for="(data,page) in emojiData">
+      <div class="emoji-row" ref="test" :key="page"
            :style="'grid-template-rows: repeat('+rows+',auto);'+'grid-template-columns: repeat('+columns+',auto);' ">
-        <img class="emoji-icon" v-for="(item,i) in data" :src="item" @click="emojiClick(item)" >
+        <img class="emoji-icon" v-for="(item,i) in data" :src="item" @click="emojiClick(item)">
         <img class="emoji-icon test" src="/api/graduate/emoji/systeam/退格.jpg" @click="backSpace"
              :style="'gridRowStart:'+rows+';gridColumnStart:'+columns+';'">
       </div>
@@ -24,7 +24,6 @@ export default {
   },
   methods: {
     emojiClick(url) {
-      // this.$refs.input.blur()
       this.$emit("emojiClick", url)
     },
     backSpace() {
