@@ -104,8 +104,8 @@ export default {
 
 .btn {
   margin-right: 1em;
-  height: 40px;
-  line-height: 40px;
+  height: 30px;
+  line-height: 30px;
   width: 6em;
 }
 

@@ -13,13 +13,13 @@
       <van-icon name="arrow" class="arrow"/>
     </div>
     <div class="follower">
-      <span><div>10</div>动态</span>|<span><div>{{ user.follow }}</div>关注</span>|<span><div>{{ user.fans }}</div>粉丝</span></div>
+      <span><div>{{sum}}</div>动态</span>|<span><div>{{ user.follow }}</div>关注</span>|<span><div>{{ user.fans }}</div>粉丝</span>
+    </div>
     <div class="card">
       <div>生物信息</div>
-      <div style="display: flex;align-items: center">
-        <span class="status">已录入</span>
-        <van-icon name="success"/>
-      </div>
+      <span class="goAdd" style="display: flex;align-items: center" v-if="!$root.getUser().hasFace"
+            @click="$router.push('/login/addface/'+$root.getUser().username)">未录入</span>
+      <span class="beAdd" v-else style="display: flex;align-items: center">已录入</span>
     </div>
     <div class="top2">
       <van-cell-group inset ce>
@@ -31,22 +31,31 @@
         </van-cell>
       </van-cell-group>
     </div>
-
+    <div style="border-bottom: 1px solid rgba(0, 0, 0, .05);margin-top: 100px"></div>
+    <div class="exitBtn" @click="$router.replace('/login')">退出登录</div>
   </div>
 </template>
 
 <script>
+import request from "@/network/request";
+
 export default {
   name: "Mine",
   data() {
     return {
       user: this.$root.getUser(),
+      sum:0
     }
   },
   methods: {
     test() {
       console.log('---')
     }
+  },
+  created() {
+    request.get('/user/articleSum').then(res=>{
+      this.sum=res.sum
+    })
   }
 }
 </script>
@@ -57,6 +66,11 @@ export default {
   flex-direction: column;
   padding: @item-margin;
   background: @bg-color;
+  top: 0;
+  bottom: 0;
+  position: fixed;
+  left: 0;
+  right: 0;
 }
 
 .user_mess {
@@ -86,15 +100,6 @@ export default {
   object-fit: cover;
 }
 
-.status {
-  //border: 1px solid white;
-  //border-radius: 50px;
-  //padding: 3px;
-  //font-size: 14px;
-  //min-width: 4em;
-  //text-align: center;
-  font-weight: bold;
-}
 
 .arrow {
   align-self: center;
@@ -104,6 +109,27 @@ export default {
   background-color: @bg-color;
   display: flex;
   justify-content: right;
+}
+
+.goAdd {
+  border-radius: 50px;
+  padding: 0 0.5em;
+  border: 1px white solid;
+  height: 1.5em;
+  text-align: center;
+  line-height: 1.5em;
+  background: rgba(238, 238, 238, 0.2);
+  color: white;
+}
+
+.beAdd {
+  border-radius: 50px;
+  padding: 0 0.5em;
+  border: 1px white solid;
+  height: 1.5em;
+  text-align: center;
+  line-height: 1.5em;
+  background: rgba(238, 238, 238, 0.2);
 }
 
 .top span {
@@ -166,10 +192,19 @@ span {
 .card {
   display: flex;
   margin: 0 calc(3 * @item-margin);
-  justify-content: space-around;
-  background: rgba(15,157,88,.3);
+  justify-content: space-evenly;
+  //background: rgba(15,157,88,.3);
+  background: @theme-color;
   padding: 5px @item-margin;
   color: white;
   border-radius: 50% 50% 0 0;
+}
+.exitBtn{
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  height: 44px;
+  line-height: 44px;
+  bottom: 44px;
 }
 </style>

@@ -6,7 +6,7 @@
           <h2 class="title">用户登录</h2>
           <div class="input-field">
             <i class="fas fa-user"></i>
-            <input type="text" placeholder="请输入账号" v-model="user.phone_number"/>
+            <input type="text" placeholder="请输入手机号" v-model="user.phone_number"/>
           </div>
           <div class="input-field">
             <i class="fas fa-lock"></i>
@@ -42,8 +42,7 @@
         <div class="content">
           <h3>没有账号?</h3>
           <p>
-            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Debitis,
-            ex ratione. Aliquid!
+            1分钟快速注册!
           </p>
           <button class="btn transparent" id="sign-up-btn">
             去注册
@@ -55,8 +54,7 @@
         <div class="content">
           <h3>已有账号?</h3>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum
-            laboriosam ad deleniti.
+            立即登录，支持人脸登录.
           </p>
           <button class="btn transparent" id="sign-in-btn">
             登录

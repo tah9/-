@@ -8,57 +8,39 @@
         <div class="nav-hide" v-show="showSmall">
           <img :src="info.userAvatar" @click="$router.push('/u/' + info.username)">
           <h4>{{ info.username }}</h4>
-          <FollowBtn :is-follow="info.focus" class="arr-bottom"></FollowBtn>
+          <FollowBtn :is-follow="info.focus" class="arr-bottom" :follow_id="info.uid" @follow="toggleFollow"></FollowBtn>
         </div>
       </transition>
       <van-icon name="label-o" size="1.3em" class="right-menu"/>
     </div>
 
     <div class="content" id="content" :style="'margin-top:'+(isFeedArticle?0:50)+'px'">
-      <div style="border-bottom: 1px solid rgba(0, 0, 0, .05);"></div>
-      <img class="topCover" v-if="isFeedArticle" :src="info.message_cover">
-      <div class="main">
-        <div class="item-top">
-          <img class="avt-img" :src="info.userAvatar" @click="$router.push('/u/' + info.username)">
-          <span class="avt-title">{{ info.username }}</span>
-          <span class="avt-tag">
-            {{ getTime(info.dateline) }}
-          &nbsp;<img class="emoji-c" src="/api/graduate/emoji/systeam/手机.jpg"/>{{ info.device_title }}
-        </span>
-          <FollowBtn :is-follow="info.focus" class="arr-bottom"></FollowBtn>
-        </div>
-        <div class="main-content" contenteditable="plaintext-only" v-html="myTextToOld(info.message)"
-             onfocus="this.blur()" v-if="info.message" @click="clickA($event)"></div>
-        <div class="item-pics">
-          <img v-for="url in info.picArr" :src="url"/>
-        </div>
-      </div>
-      <div class="margin-div"></div>
+      <ArticleContent :info="info" :is-feed-article="isFeedArticle" @follow="toggleFollow"></ArticleContent>
       <div class="content-bottom" :style="'top:'+(isFeedArticle?50:0)+'px'">
         <span>赞 {{ info.likenum }}</span>
         <span>回复 {{ info.replynum }}</span>
         <span></span> <span></span>
-        <span>转发 556</span>
+        <span>转发 0</span>
       </div>
       <div class="margin-div"></div>
-      <comment-cell :auth-name="info.username" :view-rows="resultRows"
+      <comment-cell :auth-name="info.username" :view-rows="resultRows" @seeMoreComment="seeMoreComment"
                     @toggleCommentTarget="cItem=>{commentTarget=cItem;showComment=true}"
                     :style="'margin-bottom:'+(isFeedArticle?0:50)+'px'"></comment-cell>
     </div>
 
-    <div class="bottom" v-if="info.other">
-      <van-icon name="edit"/>
+    <div class="bottom" >
+      <van-icon name="edit"  @click="writeComment()"/>
       <div style="flex: 0.4;margin-left: 1em" @click="writeComment()">写回复</div>
       <div style="flex: 0.6;display: flex;justify-content: space-around;">
-        <div class="bottom-icon">
+        <div class="bottom-icon"  @click="writeComment()">
           <van-icon name="comment-o"/>
           <van-badge :content="info.replynum"/>
         </div>
-        <div v-show="'like' in info.other" class="bottom-icon">
+        <div v-show="info.like" class="bottom-icon">
           <van-icon name="good-job" color="#0f9d58" @click="likeInfo(info)"/>
           <van-badge :content="info.likenum"/>
         </div>
-        <div v-show="!('like' in info.other)" class="bottom-icon">
+        <div v-show="!info.like" class="bottom-icon">
           <van-icon name="good-job-o" @click="likeInfo(info)"/>
           <van-badge :content="info.likenum"/>
         </div>
@@ -72,32 +54,37 @@
         </div>
       </div>
     </div>
-    <van-popup v-model="showComment" position="bottom" ref="root" round>
-      <CommentInput :commentTarget="commentTarget" :article="info" @updateComment="updateComment"></CommentInput>
-    </van-popup>
+    <van-action-sheet  v-model="showComment"  round v-if="showComment">
+      <CommentInput :commentTarget="commentTarget" :article="info" @updateComment="updateComment" @hideInput="showComment=false"></CommentInput>
+    </van-action-sheet >
+    <van-action-sheet v-if="moreData" v-model="showMoreComment" :title="'全部回复('+moreData.replynum+')'">
+      <MoreComment :data="moreData" :auth-name="info.username" :article="info"  ></MoreComment>
+    </van-action-sheet>
   </div>
 </template>
 
 <script>
 import request from "@/network/request";
-import {getTime} from "@/untils/Other";
 import CommentCell from "@/views/home/article/CommentCell";
 import FollowBtn from "@/components/FollowBtn";
 import CommentInput from "@/components/CommentInput";
-import {addComment, formatText, textToOld} from "@/untils/InputUntiil";
+import MoreComment from "@/views/home/article/MoreComment";
+import ArticleContent from "@/views/home/article/ArticleContent";
 
 export default {
   name: "ArticleInfo",
-  components: {FollowBtn, CommentCell, CommentInput},
+  components: {ArticleContent, MoreComment, FollowBtn, CommentCell, CommentInput},
   data() {
     return {
       info: {},
       text: '',
+      showMoreComment:false,
       showComment: false,
       showSmall: false,
       commentTarget: null,
       viewRows: null,
-      resultRows:null
+      resultRows:null,
+      moreData:null
     }
   },
   computed: {
@@ -106,6 +93,13 @@ export default {
     }
   },
   methods: {
+    toggleFollow(flag){
+      this.info.focus=flag
+    },
+    seeMoreComment(data){
+      this.showMoreComment=true
+      this.moreData=data
+    },
     updateComment(comment) {
       console.log(comment);
       let _this=this
@@ -150,13 +144,6 @@ export default {
       this.showComment = true;
       console.log(this.commentTarget)
     },
-    clickA(e) {
-      let node = e.target;
-      if (node.nodeName === 'A') {
-        let url = node.getAttribute('href');
-        this.$router.push(url)
-      }
-    },
     likeInfo(item) {
       let data = {
         uid: this.$root.getUser().uid,
@@ -165,24 +152,18 @@ export default {
         type: "article"
       }
       console.log(data);
-      if ('like' in item.other) {
+      if (item.like) {
         request.post('/article/dislike', data).then(res => {
           item.likenum--
-          delete item.other.like
+          item.like=false
         })
       } else {
         request.post('/article/like', data).then(res => {
           item.likenum++
-          item.other['like'] = true
+          item.like = true
         })
       }
     },
-    myTextToOld(str) {
-      return textToOld(str)
-    },
-    getTime(oldTime) {
-      return getTime(oldTime);
-    }
   },
   created() {
     request.get('/article/comment/' + this.$route.params.id).then(res => {
@@ -212,9 +193,6 @@ export default {
 @mymargin: 12px;
 @avt-size: 35px;
 @nav-height: 50px;
-.topCover {
-  width: 100%;
-}
 
 .root {
   position: fixed;
@@ -224,11 +202,6 @@ export default {
   right: 0;
 }
 
-.emoji-c {
-  width: @f-size;
-  height: @f-size;
-  vertical-align: middle;
-}
 
 .nav-hide {
   margin: 0 @mymargin;
@@ -255,36 +228,11 @@ export default {
   line-height: 2em;
 }
 
-.item-pics {
-  margin-top: 10px;
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-}
 
 .van-badge {
   background: white;
   color: @gay-font;
   margin-bottom: 10px;
-}
-
-.item-pics img {
-  width: 28vw;
-  height: 28vw;
-  object-fit: cover;
-  overflow: hidden;
-  margin: 2px;
-  border-radius: 8px;
-}
-
-.main-content {
-  margin: @mymargin 0;
-}
-
-
-.margin-div {
-  background: @gay-bg;
-  height: calc(@mymargin / 2);
 }
 
 .content-bottom {
@@ -298,15 +246,6 @@ export default {
   justify-content: space-between;
 }
 
-.avt-img {
-  margin-right: @mymargin;
-  object-fit: cover;
-  width: @avt-size;
-  height: @avt-size;
-  border-radius: 50%;
-  grid-row-start: span 2;
-}
-
 .main {
   padding: @mymargin;
 }
@@ -316,12 +255,6 @@ export default {
   height: calc(100% - @nav-height);
 }
 
-.item-top {
-  align-items: center;
-  display: grid;
-  grid-template-rows: auto auto;
-  grid-template-columns: auto 1fr auto;
-}
 
 .nav {
   z-index: 9;
@@ -348,33 +281,7 @@ export default {
 }
 
 
-.avt-title {
-  font-size: calc(@f-size - 1px);
-}
 
-.avt-tag {
-  display: flex;
-  align-items: center;
-  color: #bdbdbd;
-  font-size: calc(@f-size - 3px);
-  grid-column-start: 2;
-  line-height: 17.5px;
-}
-
-.arr-bottom {
-  //font-size: calc(@f-size - 1px);
-  grid-row-start: 1;
-  grid-row-end: 3;
-  grid-column-start: 3;
-  margin-right: 1em;
-  //color: white;
-  //height: 1.7em;
-  //line-height: 1.7em;
-  //width: 4em;
-  //text-align: center;
-  //border-radius: 40px;
-  //background-color: @theme-color;
-}
 
 .bottom {
   bottom: 0;

@@ -102,8 +102,8 @@ function restartTrack() {
 }
 
 function destroyTrack() {
-    video.srcObject = null;
     run = true
+    video.srcObject = null;
     //关闭摄像头
     window.stream.getTracks().forEach(track => track.stop());
     tracker.removeAllListeners()

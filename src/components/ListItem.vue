@@ -23,8 +23,8 @@
     </div>
     <div class="item-bottom">
         <span class="list-item-bottom-span" @click="like(item)">
-          <van-icon class="bottom-icon" name="good-job" color="#0f9d58" v-show="'like' in item.other"/>
-          <van-icon class="bottom-icon" name="good-job-o" v-show="!('like' in item.other)"/>
+          <van-icon class="bottom-icon" name="good-job" color="#0f9d58" v-show="item.like"/>
+          <van-icon class="bottom-icon" name="good-job-o" v-show="!item.like"/>
           <span>&nbsp;{{ item.likenum }}</span>
         </span>
       <span class="list-item-bottom-span"><van-icon class="bottom-icon" name="chat-o"/><span>&nbsp;{{
@@ -97,15 +97,15 @@ export default {
         type: "article"
       }
       console.log(data);
-      if ('like' in item.other) {
+      if (item.like) {
         request.post('/article/dislike', data).then(res => {
           item.likenum--
-          delete item.other.like
+          item.like=false
         })
       } else {
         request.post('/article/like', data).then(res => {
           item.likenum++
-          item.other['like'] = true
+          item.like = true
         })
       }
     },

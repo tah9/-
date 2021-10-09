@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="search">
-      <img src="/api/graduate/emoji/systeam/返回.jpg">
+      <img src="/api/graduate/emoji/systeam/返回.jpg" @click="$router.go(-1)">
       <input type="search" placeholder="搜索用户">
     </div>
     <div class="label">好友</div>

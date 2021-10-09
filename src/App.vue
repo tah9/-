@@ -18,12 +18,24 @@ html::-webkit-scrollbar{
   pointer-events: none;
 }
 .lou {
+  width: 4em;
   color: @theme-color;
   border: 1px solid @theme-color;
   text-align: center;
-  font-size: 0.5em;
+  font-size: 0.4em;
+  padding: 1px;
+  //box-sizing: border-box;
+  margin-bottom: 2px;
   border-radius: 2px;
   margin-left: 0.4em;
+  height: 16px;
+  line-height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.margin-div {
+  background: @gay-bg;
+  height: calc(@mymargin / 2);
 }
 .feed-link-tag,.feed-link-uname{
   color: @theme-color;

@@ -1,7 +1,7 @@
 <template>
   <div class="content-view">
     <div class="he-follow">
-      <div class="text-div">{{uid===$root.getUser().uid?'我':'他'}}关注的人
+      <div class="text-div">{{uid===$root.getUser().uid?'我':'TA'}}关注的人
         <van-icon name="arrow"/>
       </div>
       <div class="he-follow-list">
@@ -13,7 +13,7 @@
         </div>
       </div>
     </div>
-    <div class="text-div2">{{uid===$root.getUser().uid?'我':'他'}}的热门动态
+      <div class="text-div2">{{uid===$root.getUser().uid?'我':'TA'}}的热门动态
       <van-icon name="arrow"/>
     </div>
     <div class="list-view" >
@@ -97,9 +97,9 @@ export default {
 }
 .follow-item-avt {
   border-radius: 50%;
-  width: 4em;
-  height: 4em;
-  margin-left: 0.5em;
+  width: 3.5em;
+  height:  3.5em;
+  margin-left: 0.3em;
   overflow: hidden;
 }
 .he-follow-list{

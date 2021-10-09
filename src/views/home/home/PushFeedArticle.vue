@@ -10,7 +10,7 @@
     <div style="height: 3px;background: #f1f2f6"></div>
     <div class="content" ref="content" :style="'margin-bottom:'+(myBottom+39)+'px'">
       <div class="coverImg">
-        <img  v-show="titleImg" ref="titleImg">
+        <img v-show="titleImg" ref="titleImg">
         <input id="upTitleCover" type="file" @change="titleImgLoad()">
       </div>
       <input class="titleInput" type="text" placeholder="标题" ref="title">
@@ -28,7 +28,8 @@
         <img src="/api/graduate/emoji/systeam/话题.jpg">
         <img src="/api/graduate/emoji/systeam/键盘.jpg">
       </div>
-      <EmojiView :my-bottom="myBottom" id="emoji" @emojiClick="emojiClick" @backSpace="backSpace" ref="emoji"></EmojiView>
+      <EmojiView :my-bottom="myBottom" id="emoji" @emojiClick="emojiClick" @backSpace="backSpace"
+                 ref="emoji"></EmojiView>
     </div>
   </div>
 </template>
@@ -50,7 +51,7 @@ export default {
       input: null,
       rangeOfInputBox: null,
       dataV: '',
-      map:new Map()
+      map: new Map()
     }
   },
   methods: {
@@ -60,7 +61,7 @@ export default {
       this.titleImg = file
       let base = window.webkitURL.createObjectURL(file);
       this.$refs.titleImg.src = base
-      this.map.set(base,file)
+      this.map.set(base, file)
     },
     getText() {
       //表情转换
@@ -68,36 +69,36 @@ export default {
       let str = this.input.innerHTML
       let head = '<img class="content-emoji" src="/api/graduate/emoji/'
       let end = '.jpg">'
-      str=str.replace(new RegExp(this.dataV+"=\"\"","gm"),'')
+      str = str.replace(new RegExp(this.dataV + "=\"\"", "gm"), '')
       str = str.replace(new RegExp(head, "gm"), '[')
       str = str.replace(new RegExp(end, "gm"), ']')
-      str=str.replace(new RegExp(']<div','gm'),end)
+      str = str.replace(new RegExp(']<div', 'gm'), end)
       return str
     },
     publishArticle() {
       let formData = new FormData()
       let imgs = this.input.getElementsByClassName('content-Img');
       for (let img of imgs) {
-        formData.append('file',this.map.get(img.src))
+        formData.append('file', this.map.get(img.src))
       }
-      formData.append('file',this.map.get(this.$refs.titleImg.src))
+      formData.append('file', this.map.get(this.$refs.titleImg.src))
       //上传图片
-      request.post('/article/upPics',formData).then(res=>{
+      request.post('/article/upPics', formData).then(res => {
         return Promise.resolve(res.split(','))
-      }).then(urls=>{//替换图片路径
-        for (let i = 0; i <imgs.length; i++) {
-            imgs[i].src=urls[i]
+      }).then(urls => {//替换图片路径
+        for (let i = 0; i < imgs.length; i++) {
+          imgs[i].src = urls[i]
         }
-        return Promise.resolve(urls[urls.length-1])
-      }).then((titleUrl)=>{
+        return Promise.resolve(urls[urls.length - 1])
+      }).then((titleUrl) => {
         let data = {
           uid: this.$root.getUser().uid,
           message: formatText(this.input.innerHTML),
-          message_title:this.$refs.title.value,
-          message_cover:titleUrl,
+          message_title: this.$refs.title.value,
+          message_cover: titleUrl,
           device_title: this.getDeviceTitle(),
           dateline: Date.parse(new Date()) / 1000,
-          feedType:'feedArticle'
+          feedType: 'feedArticle'
         }
         let articleJson = JSON.stringify(data)
         console.log(articleJson);
@@ -112,7 +113,7 @@ export default {
       let contentFile = this.$refs.contentFile;
       let file = contentFile.files[0]
       let base = window.webkitURL.createObjectURL(file);
-      this.map.set(base,file)
+      this.map.set(base, file)
       this.dataV = this.input.attributes[0].name;
       let emojiEl = document.createElement("img");
       //设置dataV
@@ -124,20 +125,22 @@ export default {
       let desc = document.createElement('div')
       desc.setAttribute(this.dataV, '')
       // desc.setAttribute('placeholder', '图片描述')
-      desc.innerText='图片描述'
+      desc.innerText = '图片描述'
       desc.className = 'describe'
       let con = document.createElement('div')
       con.className = 'content-img-root'
       con.setAttribute(this.dataV, '')
       con.appendChild(emojiEl)
       con.appendChild(desc)
-      con.addEventListener('click',click)
+      con.addEventListener('click', click)
       this.inputAddEl(con)
-      let _this=this
-      function click(){
+      let _this = this
+
+      function click() {
         _this.input.removeChild(con);
         _this.map.delete(con.children[0].src)
       }
+
       this.inputAddEl(document.createElement('br'))
       this.myBottom = 0
     },
@@ -246,7 +249,7 @@ export default {
     //使input保持焦点
     document.addEventListener("click", function (e) {
       if (e.target.nodeName !== 'INPUT') {
-      _this.input.focus()
+        _this.input.focus()
       }
       // if (e.target.id !== "input"||e.target.getAttribute('class')!=="emoji-icon") {
       //   e.preventDefault()
@@ -364,7 +367,6 @@ export default {
   display: flex;
   flex-direction: column;
 }
-
 
 
 .content {

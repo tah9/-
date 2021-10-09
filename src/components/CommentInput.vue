@@ -31,6 +31,7 @@
 import EmojiView from "@/views/home/home/compone/EmojiView";
 import request from "@/network/request";
 import {formatText} from '@/untils/InputUntiil'
+import {Toast} from "vant";
 
 export default {
   name: "EmojiInput",
@@ -84,6 +85,8 @@ export default {
       request.post('/article/commentPush', formData).then(res => {
         console.log(res);
         _this.$emit('updateComment',res.rows)
+        _this.$emit('hideInput')
+        Toast.success('发表成功')
       })
     },
     insertImg() {
@@ -105,6 +108,7 @@ export default {
       emojiEl.className = 'content-emoji'
       emojiEl.src = url;
       this.insertEl(emojiEl)
+      console.log('weishenm')
     },
     //向输入框插入元素
     insertEl(el) {
@@ -139,6 +143,15 @@ export default {
         }
       }
     }
+    // //使input保持焦点
+    // document.addEventListener("click", function (e) {
+    //   if (e.target.nodeName !== 'INPUT') {
+    //     _this.input.focus()
+    //   }
+    //   // if (e.target.id !== "input"||e.target.getAttribute('class')!=="emoji-icon") {
+    //   //   e.preventDefault()
+    //   // }
+    // })
   }
 }
 </script>
