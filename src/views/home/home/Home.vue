@@ -3,7 +3,7 @@
     <div class="input-search">
       <img :src="userAvatar"  @click="$router.push('/u/'+username)">
       <input type="search">
-      <van-icon name="/api/graduate/emoji/systeam/通知.jpg"/>
+      <van-icon name="/api/graduate/emoji/systeam/通知.jpg" @click="$router.push('/notice')"/>
       <span @click="$router.push('/pushFeedArticle')">+</span>
     </div>
     <van-tabs v-model="active" class="tab-root" sticky color="#0f9d58">

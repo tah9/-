@@ -13,6 +13,7 @@ export default {
       webSocket: null,
       // ws定时器
       wsTimer: null,
+      user:this.$root.getUser()
     }
   },
   async mounted() {
@@ -35,7 +36,7 @@ export default {
       // 销毁ws
       this.wsDestroy()
       // 初始化ws
-      this.webSocket = new WebSocket(this.wsUrl+'EnterExit')
+      this.webSocket = new WebSocket(this.wsUrl+this.user.uid)
       // ws连接建立时触发
       this.webSocket.addEventListener('open', this.wsOpenHanler)
       // ws服务端给客户端推送消息
@@ -46,15 +47,15 @@ export default {
       this.webSocket.addEventListener('close', this.wsCloseHanler)
 
       // 检查ws连接状态,readyState值为0表示尚未连接，1表示建立连接，2正在关闭连接，3已经关闭或无法打开
-      clearInterval(this.wsTimer)
-      this.wsTimer = setInterval(() => {
-        if (this.webSocket.readyState === 1) {
-          clearInterval(this.wsTimer)
-        } else {
-          // console.log('ws建立连接失败')
-          // this.wsInit()
-        }
-      }, 3000)
+      // clearInterval(this.wsTimer)
+      // this.wsTimer = setInterval(() => {
+      //   if (this.webSocket.readyState === 1) {
+      //     clearInterval(this.wsTimer)
+      //   } else {
+      //     // console.log('ws建立连接失败')
+      //     // this.wsInit()
+      //   }
+      // }, 3000)
     },
     wsOpenHanler(event) {
       console.log('ws建立连接成功')
@@ -93,7 +94,7 @@ export default {
         this.webSocket.removeEventListener('close', this.wsCloseHanler)
         this.webSocket.close()
         this.webSocket = null
-        clearInterval(this.wsTimer)
+        // clearInterval(this.wsTimer)
       }
     },
   }

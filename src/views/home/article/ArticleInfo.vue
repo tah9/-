@@ -8,7 +8,7 @@
         <div class="nav-hide" v-show="showSmall">
           <img :src="info.userAvatar" @click="$router.push('/u/' + info.username)">
           <h4>{{ info.username }}</h4>
-          <FollowBtn :is-follow="info.focus" class="arr-bottom" :follow_id="info.uid" @follow="toggleFollow"></FollowBtn>
+          <FollowBtn :is-follow="info.beFollow" class="arr-bottom" :follow_id="info.uid" @follow="toggleFollow"></FollowBtn>
         </div>
       </transition>
       <van-icon name="label-o" size="1.3em" class="right-menu"/>
@@ -36,11 +36,11 @@
           <van-icon name="comment-o"/>
           <van-badge :content="info.replynum"/>
         </div>
-        <div v-show="info.like" class="bottom-icon">
+        <div v-show="info.beLike" class="bottom-icon">
           <van-icon name="good-job" color="#0f9d58" @click="likeInfo(info)"/>
           <van-badge :content="info.likenum"/>
         </div>
-        <div v-show="!info.like" class="bottom-icon">
+        <div v-show="!info.beLike" class="bottom-icon">
           <van-icon name="good-job-o" @click="likeInfo(info)"/>
           <van-badge :content="info.likenum"/>
         </div>
@@ -94,7 +94,7 @@ export default {
   },
   methods: {
     toggleFollow(flag){
-      this.info.focus=flag
+      this.info.beFollow=flag
     },
     seeMoreComment(data){
       this.showMoreComment=true
@@ -152,15 +152,15 @@ export default {
         type: "article"
       }
       console.log(data);
-      if (item.like) {
+      if (item.beLike) {
         request.post('/article/dislike', data).then(res => {
           item.likenum--
-          item.like=false
+          item.beLike=false
         })
       } else {
         request.post('/article/like', data).then(res => {
           item.likenum++
-          item.like = true
+          item.beLike = true
         })
       }
     },

@@ -11,7 +11,7 @@ Vue.use(Vant);
 Vue.use(navbar);
 Vue.config.productionTip = false
 // Vue.use(ElementUI);
-Vue.prototype.wsUrl='ws://localhost/websocket/'
+Vue.prototype.wsUrl='ws://192.168.224.210:9001/websocket/'
 // Vue.prototype.baiduUrl = 'https://aip.baidubce.com/rest/2.0/face/v3'
 // import VConsole from 'vconsole'
 //

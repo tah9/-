@@ -74,13 +74,7 @@ const routes = [
     }, {
         path: '/articleInfo/:id',
         component: () => import('../views/home/article/ArticleInfo')
-    }, {
-        path: '/onlineChat',
-        component: () => import('../views/chat/OnlineChat')
-    }, {
-        path: '/onlineChat2',
-        component: () => import('../views/chat/OnlineChat2')
-    }, {
+    },  {
         path: '/t/:tag',
         component: () => import('../views/home/home/TagsArticle')
     },{
@@ -92,6 +86,9 @@ const routes = [
     },{
         path: '/editUser',
         component: () => import('../views/home/user/EditUser')
+    },{
+        path: '/notice',
+        component: () => import('../views/home/user/Notice')
     }
 ]
 

@@ -9,13 +9,13 @@
         <div class="nav-hide" v-show="showSmall">
           <img :src="userInfo.userAvatar" class="nav-avt">
           <h4>{{userInfo.username}}</h4>
-          <FollowBtn :is-follow="userInfo.isFollow" v-if="userInfo.uid!==$root.getUser().uid"></FollowBtn>
+          <FollowBtn :is-follow="userInfo.beFollow" v-if="userInfo.uid!==$root.getUser().uid" :follow_id="userInfo.uid" @follow="toggleFollow"></FollowBtn>
         </div>
         </transition>
         <van-icon name="label-o" size="1.5em" color="#ffffff" class="right-menu"/>
       </div>
       <transition name="fade">
-      <HeaderInfo :res="userNumber" :user="userInfo" v-show="!showSmall"></HeaderInfo>
+      <HeaderInfo  :user="userInfo" v-show="!showSmall"></HeaderInfo>
       </transition>
     </div>
     <div slot="content">
@@ -39,7 +39,6 @@ export default {
       navShrinkHeight: 65,
       navExpandHeight: 500,
       showSmall: false,
-      userNumber:{},
       userInfo:{},
     }
   },
@@ -50,6 +49,9 @@ export default {
     HeaderBarPage
   },
   methods: {
+    toggleFollow(flag){
+      this.user.beFollow=flag
+    },
     navHide(height) {
       // console.log(flag);
       this.showSmall = height < 66
@@ -60,7 +62,6 @@ export default {
     request.post('/user/info' ,{
       username:username
     }).then(res => {
-      this.userNumber=res
       this.userInfo=res.user
       console.log(res);
     });

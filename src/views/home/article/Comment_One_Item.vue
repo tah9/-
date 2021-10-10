@@ -12,9 +12,8 @@
       <div class="comment-bottom">
         <TimeSpan :it-time="item.dateline"></TimeSpan>
         <span class="bottom-span" style="margin-right: 10px">
-          <van-icon class="bottom-icon" name="good-job-o" @click="commentLike(item)" v-show="!item.like"/>
-            <van-icon class="bottom-icon" name="good-job" color="#0f9d58" v-show="item.like"
-                      @click="commentLike(item)"/>
+          <van-icon class="bottom-icon" name="good-job-o" @click="commentLike(item)" v-show="!item.beLike"/>
+            <van-icon class="bottom-icon" name="good-job" color="#0f9d58" v-show="item.beLike" @click="commentLike(item)"/>
           <span>&nbsp;{{ item.likenum }}</span>
         </span>
         <span class="bottom-span" style="margin-right: 10px"><van-icon class="bottom-icon" name="chat-o"/><span>&nbsp;{{
@@ -83,15 +82,15 @@ export default {
         ruid: item.uid,
         type: 'comment',
       }
-      if (item.like) {
+      if (item.beLike) {
         request.post('/article/dislike', data).then(res => {
           item.likenum--
-          _this.$set(item, 'like', false)
+          _this.$set(item, 'beLike', false)
         })
       } else {
         request.post('/article/like', data).then(res => {
           item.likenum++
-          _this.$set(item, 'like', true)
+          _this.$set(item, 'beLike', true)
         })
       }
     },

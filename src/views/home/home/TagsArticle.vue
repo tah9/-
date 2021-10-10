@@ -9,7 +9,7 @@
             <h3>{{ info.title }}</h3>
             <div>{{ formatNum(info.hot_num) + '热度 ' }}</div>
           </div>
-          <FollowBtn :is-follow="info.focus" style="margin-left: auto" type="tag" :follow_id="info.id" @follow="toggleFollow"></FollowBtn>
+          <FollowBtn :is-follow="info.beFollow" style="margin-left: auto" type="tag" :follow_id="info.id" @follow="toggleFollow"></FollowBtn>
         </div>
       </transition>
       <van-icon name="search" size="1.3em" class="right-menu" color="white"/>
@@ -28,7 +28,7 @@
           <img :src="url" v-for="url in pics">
           <div style="margin-left: 10px">{{ formatNum(info.follownum) }}人关注</div>
           <van-icon name="arrow" size="10"/>
-          <FollowBtn :is-follow="info.focus" style="margin-left: auto" type="tag" :follow_id="info.id" @follow="toggleFollow"></FollowBtn>
+          <FollowBtn :is-follow="info.beFollow" style="margin-left: auto" type="tag" :follow_id="info.id" @follow="toggleFollow"></FollowBtn>
         </div>
         <div style="margin-top: 10px" v-html="info.intro.replace(new RegExp('\r\n','gm'),'<br>')"></div>
       </div>
@@ -68,7 +68,7 @@ export default {
   },
   methods: {
     toggleFollow(flag){
-      this.info.focus=flag
+      this.info.beFollow=flag
     },
     toggleTab(cur) {
       this.current = cur;

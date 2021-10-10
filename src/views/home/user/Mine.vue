@@ -31,8 +31,8 @@
         </van-cell>
       </van-cell-group>
     </div>
-    <div style="border-bottom: 1px solid rgba(0, 0, 0, .05);margin-top: 100px"></div>
-    <div class="exitBtn" @click="$router.replace('/login')">退出登录</div>
+    <div style="border-bottom: 1px solid rgba(0, 0, 0, .05);margin-top: 100px;margin-bottom: 10px"></div>
+    <div class="exitBtn btn" @click="$router.replace('/login')">退出登录</div>
   </div>
 </template>
 

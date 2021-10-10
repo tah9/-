@@ -1,5 +1,6 @@
 <template>
-  <div :style="type==='tag'?(isFollow?tagBeFollow:tagNotFollow):''" v-text="checkFocus()" @click="focusIt()" v-if="$root.getUser().uid!==follow_id"></div>
+  <div :style="type==='tag'?(isFollow?tagBeFollow:tagNotFollow):(isFollow?userBeFollow:userNotFollow)" v-text="checkFocus()"
+       @click="focusIt()" v-if="$root.getUser().uid!==follow_id"></div>
 </template>
 
 <script>
@@ -24,6 +25,14 @@ export default {
         background: 'rgba(238, 238, 238, 0.2)',
         color:'white'
       },
+      userBeFollow:{
+        color: '#757575',
+        background:'#e5e5e5'
+      },
+      userNotFollow:{
+        background:'#0f9d58',
+        color: 'white'
+      }
     }
   },
   watch: {
@@ -34,12 +43,6 @@ export default {
   methods: {
     checkFocus() {
       return this.isFollow ? '已关注' : '关注'
-    },
-    btnColor() {
-      return this.isFollow ? '#e5e5e5' : this.color
-    },
-    fontColor() {
-      return this.isFollow ? '#757575' : 'white'
     },
     focusIt() {
       let json = {

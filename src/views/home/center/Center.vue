@@ -1,12 +1,14 @@
 <template>
 <div>
-  中间
+  <message></message>
 </div>
 </template>
 
 <script>
+import Message from "@/views/Message";
 export default {
-  name: "Center"
+  name: "Center",
+  components: {Message}
 }
 </script>
 

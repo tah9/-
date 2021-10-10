@@ -15,16 +15,16 @@
       <img v-if="item.pic.length>0" v-for="(url,index) in item.pic.split(',')" :src="url"
            @click="clickImg(item.pic.split(','),index)"/>
     </div>
-    <div class="first-comment" v-if="'firstComment' in item.other">
+    <div class="first-comment" v-if="item.firstComment">
       <div class="comment-like-number">
-        <div>{{ item.other.firstComment.likenum }}赞</div>
+        <div>{{ item.firstComment.likenum }}赞</div>
       </div>
-      <div v-html="setFirstComment(item.other.firstComment)" class="first-comment-main"></div>
+      <div v-html="setFirstComment(item.firstComment)" class="first-comment-main"></div>
     </div>
     <div class="item-bottom">
         <span class="list-item-bottom-span" @click="like(item)">
-          <van-icon class="bottom-icon" name="good-job" color="#0f9d58" v-show="item.like"/>
-          <van-icon class="bottom-icon" name="good-job-o" v-show="!item.like"/>
+          <van-icon class="bottom-icon" name="good-job" color="#0f9d58" v-show="item.beLike"/>
+          <van-icon class="bottom-icon" name="good-job-o" v-show="!item.beLike"/>
           <span>&nbsp;{{ item.likenum }}</span>
         </span>
       <span class="list-item-bottom-span"><van-icon class="bottom-icon" name="chat-o"/><span>&nbsp;{{
@@ -97,15 +97,15 @@ export default {
         type: "article"
       }
       console.log(data);
-      if (item.like) {
+      if (item.beLike) {
         request.post('/article/dislike', data).then(res => {
           item.likenum--
-          item.like=false
+          item.beLike=false
         })
       } else {
         request.post('/article/like', data).then(res => {
           item.likenum++
-          item.like = true
+          item.beLike = true
         })
       }
     },

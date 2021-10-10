@@ -7,6 +7,14 @@
 // todo 话题分析：平均回复数。帖子数量。总热度。。。
 </script>
 <style lang="less">
+.btn {
+  width: 80%;
+  border-radius: @item-margin;
+  background: white;
+  margin-left: 10%;
+  height: 44px;
+  line-height: 44px;
+}
 html::-webkit-scrollbar{
   display: none;
 }
@@ -23,8 +31,7 @@ html::-webkit-scrollbar{
   border: 1px solid @theme-color;
   text-align: center;
   font-size: 0.4em;
-  padding: 1px;
-  //box-sizing: border-box;
+
   margin-bottom: 2px;
   border-radius: 2px;
   margin-left: 0.4em;

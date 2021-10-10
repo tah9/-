@@ -10,7 +10,7 @@
            <time-span :it-time="info.dateline" style="margin-right: 0"></time-span>
           &nbsp;<img class="emoji-c" src="/api/graduate/emoji/systeam/手机.jpg"/>{{ info.device_title }}
         </span>
-        <FollowBtn :is-follow="info.focus" class="arr-bottom"  :follow_id="info.uid" @follow="toggleFollow"></FollowBtn>
+        <FollowBtn  :is-follow="info.beFollow" class="arr-bottom"  :follow_id="info.uid" @follow="toggleFollow"></FollowBtn>
       </div>
       <div class="main-content" contenteditable="plaintext-only" v-html="myTextToOld(info.message)"
            onfocus="this.blur()" v-if="info.message" @click="clickA($event)"></div>

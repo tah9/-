@@ -13,7 +13,7 @@
 
     <div class="top-one">
       <img @click="bigImg(user.userAvatar)" :src="user.userAvatar" class="avtimg">
-      <FollowBtn class="btn" v-if="user.uid!==$root.getUser().uid"></FollowBtn>
+      <FollowBtn class="btn" v-if="user.uid!==$root.getUser().uid"  :is-follow="user.beFollow" :follow_id="user.uid" @follow="toggleFollow"></FollowBtn>
       <div class="btn2" v-else @click="$router.push('/editUser')">编辑资料</div>
       <img src="/api/graduate/emoji/systeam/邮箱.jpg" class="emailimg">
     </div>
@@ -27,10 +27,12 @@ import FollowBtn from "@/components/FollowBtn";
 
 export default {
   props: {
-    res: {},
-    user: {}
+    user: null
   },
   methods: {
+    toggleFollow(flag){
+      this.user.beFollow=flag
+    },
     getTime(oldTime) {
       return getTime(oldTime)
     },
