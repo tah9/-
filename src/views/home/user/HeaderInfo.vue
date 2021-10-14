@@ -15,7 +15,15 @@
       <img @click="bigImg(user.userAvatar)" :src="user.userAvatar" class="avtimg">
       <FollowBtn class="btn" v-if="user.uid!==$root.getUser().uid"  :is-follow="user.beFollow" :follow_id="user.uid" @follow="toggleFollow"></FollowBtn>
       <div class="btn2" v-else @click="$router.push('/editUser')">编辑资料</div>
-      <img src="/api/graduate/emoji/systeam/邮箱.jpg" class="emailimg">
+      <router-link :to="{
+       path:'/webChat',
+       query:{
+         user_id : this.$root.getUser().uid,
+         received_id : this.user.uid
+       }
+      }">
+        <img v-if="this.user.uid !== this.$root.getUser().uid" src="/api/graduate/emoji/systeam/邮箱.jpg" class="emailimg">
+      </router-link>
     </div>
   </div>
 </template>
@@ -26,6 +34,12 @@ import {ImagePreview} from "vant";
 import FollowBtn from "@/components/FollowBtn";
 
 export default {
+  data(){
+    return {
+      received_id: this.user.uid, //获取不了的样子
+      user_id: this.$root.getUser().uid
+    }
+  },
   props: {
     user: null
   },
@@ -41,11 +55,9 @@ export default {
     },
     toFocus() {
       console.log('关注')
-    }
+    },
   },
   name: "HeaderInfo",
-  created() {
-  },
   components: {
     FollowBtn
   }

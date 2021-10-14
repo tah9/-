@@ -15,6 +15,7 @@ const Probe = () => import('../views/Probe/Probe')
 const EnterExit = () => import('../views/EnterExit')
 const Test2 = () => import('../views/WebCam')
 const HumanTest = () => import('../views/HumanTest')
+const WebChat = () => import('../views/home/user/webChat/WebChat')
 
 Vue.use(VueRouter)
 const routes = [
@@ -86,9 +87,12 @@ const routes = [
     },{
         path: '/editUser',
         component: () => import('../views/home/user/EditUser')
-    },{
+    }, {
         path: '/notice',
         component: () => import('../views/home/user/Notice')
+    },{
+        path:'/webChat',
+        component: WebChat
     }
 ]
 
